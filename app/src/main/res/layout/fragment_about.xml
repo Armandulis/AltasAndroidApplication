@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/text_final_email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="64dp"
+        android:text="@string/about_email"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="@+id/button_dial_about_phone"
+        app:layout_constraintTop_toBottomOf="@+id/image_view_about_logo" />
+
+    <TextView
+        android:id="@+id/text_email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="false"
+        android:text="@string/about_email_address"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="@+id/text_final_email"
+        app:layout_constraintTop_toBottomOf="@+id/text_final_email" />
+
+
+    <TextView
+        android:id="@+id/text_final_phone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="@string/about_phone"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="@+id/text_email"
+        app:layout_constraintTop_toBottomOf="@+id/text_email" />
+
+    <TextView
+        android:id="@+id/text_final_about_us"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/about_us"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_phone" />
+
+    <TextView
+        android:id="@+id/text_phone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/about_phone_number"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="@+id/text_final_phone"
+        app:layout_constraintTop_toBottomOf="@+id/text_final_phone" />
+
+    <ImageView
+        android:id="@+id/image_view_about_logo"
+        android:layout_width="391dp"
+        android:layout_height="103dp"
+        android:contentDescription="@string/company_logo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/logo_lt" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/button_dial_about_phone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="24dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:backgroundTint="@color/lightPrimary"
+        app:layout_constraintBottom_toBottomOf="@+id/image_view_about_logo"
+        app:layout_constraintStart_toStartOf="@+id/image_view_about_logo"
+        app:layout_constraintTop_toBottomOf="@+id/image_view_about_logo"
+        app:layout_constraintVertical_bias="0.3"
+        app:srcCompat="@drawable/ic_phone_black_24dp" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/button_send_about_email"
+        android:layout_width="56dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:backgroundTint="@color/lightPrimary"
+        app:layout_constraintStart_toEndOf="@+id/button_dial_about_phone"
+        app:layout_constraintTop_toTopOf="@+id/button_dial_about_phone"
+        app:srcCompat="@drawable/ic_email_black_24dp" />
+
+    <Button
+        android:id="@+id/button_edit_about_email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="@string/edit"
+        app:layout_constraintBottom_toBottomOf="@+id/text_final_email"
+        app:layout_constraintStart_toEndOf="@+id/text_final_email" />
+
+    <Button
+        android:id="@+id/button_edit_about_us"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="@string/edit"
+        app:layout_constraintBottom_toBottomOf="@+id/text_final_about_us"
+        app:layout_constraintStart_toEndOf="@+id/text_final_about_us" />
+
+    <Button
+        android:id="@+id/button_edit_about_phone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="@string/edit"
+        app:layout_constraintBottom_toBottomOf="@+id/text_final_phone"
+        app:layout_constraintStart_toEndOf="@+id/text_final_phone" />
+
+
+    <TextView
+        android:id="@+id/text_about_us"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="64dp"
+        android:scrollbars="vertical"
+        android:text="@string/about_us_text"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_final_about_us" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

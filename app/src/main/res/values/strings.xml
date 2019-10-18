@@ -1,6 +1,47 @@
 <resources>
+    // App
     <string name="app_name">Altas</string>
+
+    // Home Fragment
     <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+
+    // About Fragment
+    <string name="title_about">About</string>
+    <string name="about_email">Email: </string>
+    <string name="about_phone">Phone: </string>
+    <string name="about_us">About us: </string>
+    <string name="about_phone_number">+370 68 233 313</string>
+    <string name="about_email_address">Business@gmail.com</string>
+    <string name="about_us_text">Such a great company very trusted very cheap much wowSuch a great company very trusted very cheap much wowSuch a great company very trusted very cheap much wowSuch a great company very trusted very cheap much wowSuch a great company very trusted very cheap much wowSuch a great company very trusted very cheap much wowSuch a great company very trusted very cheap much wowSuch a great company very trusted very cheap much wow</string>
+
+    // About Edit Dialog Fragment
+    <string name="update_contact_phone">Update contact phone:</string>
+    <string name="update_contact_email">Update contact email:</string>
+    <string name="update_us_text">Update about us text:</string>
+    <string name="update_email_success">Email updated successfully</string>
+    <string name="update_phone_success">Phone updated successfully</string>
+    <string name="update_about_us_success">About us updated successfully</string>
+
+    // General
+    <string name="no_current_information">Currently there is no information</string>
+    <string name="company_logo">Company\'s logo</string>
+
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+
+    // Actions
+    <string name="save">Save</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+
+    // Invalid Messages
+    <string name="incorrect_email">Please provide a valid email</string>
+    <string name="incorrect_phone">Please provide a valid phone</string>
+    <string name="about_us_too_short">About us text is too short</string>
+
+    // Hints
+    <string name="hint_email">Email</string>
+    <string name="hint_about_us">About us</string>
+    <string name="hint_phone">Phone</string>
+
 </resources>
