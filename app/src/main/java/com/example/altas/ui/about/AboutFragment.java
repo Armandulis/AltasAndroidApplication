@@ -37,6 +37,7 @@ public class AboutFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
+        // Inflate about
         View aboutFragmentRoot = inflater.inflate(R.layout.fragment_about, container, false);
 
         aboutViewModel = ViewModelProviders.of(this).get(AboutViewModel.class);

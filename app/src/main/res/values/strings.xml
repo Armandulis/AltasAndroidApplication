@@ -22,6 +22,14 @@
     <string name="update_phone_success">Phone updated successfully</string>
     <string name="update_about_us_success">About us updated successfully</string>
 
+    // Shop Fragment
+    <string name="title_shop">Shop</string>
+
+    // Shop list item
+    <string name="price">Price:</string>
+    <string name="brand">Brand:</string>
+    <string name="amount">Amount:</string>
+
     // General
     <string name="no_current_information">Currently there is no information</string>
     <string name="company_logo">Company\'s logo</string>

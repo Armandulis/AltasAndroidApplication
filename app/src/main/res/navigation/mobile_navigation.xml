@@ -11,6 +11,11 @@
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home" />
     <fragment
+        android:id="@+id/navigation_shop"
+        android:name="com.example.altas.ui.shop.ShopFragment"
+        android:label="@string/title_shop"
+        tools:layout="@layout/fragment_shop" />
+    <fragment
         android:id="@+id/navigation_about"
         android:name="com.example.altas.ui.about.AboutFragment"
         android:label="@string/title_about"
