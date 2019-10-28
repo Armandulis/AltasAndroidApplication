@@ -1,6 +1,8 @@
 package com.example.altas.Models;
 
-public class Product {
+import java.io.Serializable;
+
+public class Product implements Serializable {
 
     public int id;
     public String name;

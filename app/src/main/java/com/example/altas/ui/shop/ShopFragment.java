@@ -9,10 +9,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.altas.Models.Product;
 import com.example.altas.R;
+import com.example.altas.ui.list.adepters.ItemClickSupport;
 import com.example.altas.ui.list.adepters.ShopListAdapter;
 
 /**
@@ -22,11 +26,12 @@ public class ShopFragment extends Fragment {
 
     public static final int PAGE_SIZE = 10;
     public static final int DEFAULT_PAGE = 1;
+    public static final String SELECTED_PRODUCT_KEY = "SELECTED_PRODUCT_KEY";
 
     private ShopViewModel mViewModel;
 
     private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
+    private ShopListAdapter mAdapter;
     private LinearLayoutManager mLayoutManager;
 
     private int currentPage = DEFAULT_PAGE;
@@ -42,7 +47,6 @@ public class ShopFragment extends Fragment {
 
         // Inflate shop fragment's view
         View shopFragmentRoot = inflater.inflate(R.layout.fragment_shop, container, false);
-
 
         // Initialize ViewModel
         mViewModel = ViewModelProviders.of(this).get(ShopViewModel.class);
@@ -62,7 +66,34 @@ public class ShopFragment extends Fragment {
         mAdapter = new ShopListAdapter(mViewModel.productsListMutableLiveData.getValue(), getContext());
         mRecyclerView.setAdapter(mAdapter);
 
+        // Set up on click Listener
+        ItemClickSupport.addTo(mRecyclerView)
+                .setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
+                    @Override
+                    public void onItemClicked(RecyclerView recyclerView, int position, View v) {
+                        // Get product that was clicked
+                        Product product = mAdapter.getItemFromList(position);
+                        // Handle navigation
+                        openProductDetails(product);
+                    }
+                });
+
         return shopFragmentRoot;
+    }
+
+    /**
+     * Navigates user to the ProductDetailsFragment with the product that was clicked on
+     *
+     * @param product Product that was clicked on
+     */
+    private void openProductDetails(Product product) {
+        // Set up a bundle that we will pass to ProductDetailsFragment
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(SELECTED_PRODUCT_KEY, product);
+
+        // Navigate user
+        NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
+        navController.navigate(R.id.product_details_fragment, bundle);
     }
 
     private RecyclerView.OnScrollListener getProductsListScrollListener() {
@@ -80,7 +111,7 @@ public class ShopFragment extends Fragment {
                 int firstVisibleItemPosition = mLayoutManager.findFirstVisibleItemPosition();
 
                 // !isLoading && !isLastPage
-                if ( !mViewModel.isLoading() && !mViewModel.isLastPage() ) {
+                if (!mViewModel.isLoading() && !mViewModel.isLastPage()) {
                     if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount
                             && firstVisibleItemPosition >= 0
                             && totalItemCount >= PAGE_SIZE) {

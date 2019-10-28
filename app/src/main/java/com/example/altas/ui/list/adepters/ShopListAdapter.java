@@ -24,31 +24,48 @@ public class ShopListAdapter extends RecyclerView.Adapter<ShopListAdapter.MyView
     private ArrayList<Product> dataModelList;
     private Context mContext;
 
+    /**
+     * MyViewHolder holds view items and sets values to them
+     */
     static class MyViewHolder extends RecyclerView.ViewHolder {
         ImageView cardImageView;
         TextView titleTextView;
-        TextView subTitleTextView;
         TextView priceTextView;
         TextView brandTextView;
 
+        /**
+         * Initializes local variables to items from layout
+         *
+         * @param itemView View
+         */
         MyViewHolder(@NonNull View itemView) {
             super(itemView);
             cardImageView = itemView.findViewById(R.id.shop_list_item_image_view);
             titleTextView = itemView.findViewById(R.id.shop_list_item_title);
-            subTitleTextView = itemView.findViewById(R.id.shop_list_item_subtitle);
             priceTextView = itemView.findViewById(R.id.shop_list_item_price);
             brandTextView = itemView.findViewById(R.id.shop_list_item_brand);
         }
 
+        /**
+         * Sets values to layouts items
+         *
+         * @param product Product
+         * @param context Context
+         */
         void bindData(Product product, Context context) {
             cardImageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.logo_lt));
             titleTextView.setText(product.name);
-            subTitleTextView.setText(product.description);
             priceTextView.setText(product.price);
             brandTextView.setText(product.brand);
         }
     }
 
+    /**
+     * ShopListAdapter's constructor
+     *
+     * @param modelList Array<Product>
+     * @param context   Context
+     */
     public ShopListAdapter(ArrayList<Product> modelList, Context context) {
         dataModelList = modelList;
         mContext = context;
@@ -58,11 +75,10 @@ public class ShopListAdapter extends RecyclerView.Adapter<ShopListAdapter.MyView
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         // Inflate out card list item
-
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.shop_list_item_layout, parent, false);
-        // Return a new view holder
 
+        // Return a new view holder
         return new MyViewHolder(view);
     }
 
@@ -78,4 +94,15 @@ public class ShopListAdapter extends RecyclerView.Adapter<ShopListAdapter.MyView
         // Return the total number of items
         return dataModelList.size();
     }
+
+    /**
+     * Returns an item from the list in given position
+     *
+     * @param productAtPosition int
+     * @return Product at given position
+     */
+    public Product getItemFromList(int productAtPosition) {
+        return dataModelList.get(productAtPosition);
+    }
+
 }

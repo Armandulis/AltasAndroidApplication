@@ -52,4 +52,7 @@
     <string name="hint_about_us">About us</string>
     <string name="hint_phone">Phone</string>
 
+    // ids
+    <item name="item_click_support" type="id" />
+
 </resources>

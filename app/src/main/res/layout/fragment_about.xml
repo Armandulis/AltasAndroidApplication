@@ -130,7 +130,6 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="32dp"
-        android:layout_marginBottom="64dp"
         android:scrollbars="vertical"
         android:text="@string/about_us_text"
         android:textAlignment="center"
