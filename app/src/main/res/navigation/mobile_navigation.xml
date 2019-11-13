@@ -22,7 +22,7 @@
         tools:layout="@layout/fragment_about" />
     <fragment
         android:id="@+id/product_details_fragment"
-        android:name="com.example.altas.ui.product.details.ProductDetailsFragment"
-        android:label="@string/title_home"
+        android:name="com.example.altas.ui.product.ProductDetailsFragment"
+        android:label="@string/title_details"
         tools:layout="@layout/fragment_product_details" />
 </navigation>

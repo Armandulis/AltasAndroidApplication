@@ -41,6 +41,8 @@
     <string name="save">Save</string>
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
+    <string name="create">Create</string>
+    <string name="search">Search</string>
 
     // Invalid Messages
     <string name="incorrect_email">Please provide a valid email</string>
@@ -51,6 +53,15 @@
     <string name="hint_email">Email</string>
     <string name="hint_about_us">About us</string>
     <string name="hint_phone">Phone</string>
+    <string name="add_product">Add new product</string>
+    <string name="title_details">Details</string>
+    <string name="title_create">Create</string>
+    <string name="type">Type:</string>
+    <string name="name">Name:</string>
+    <string name="description">Description:</string>
+    <string name="product_image">Product\'s image</string>
+    <string name="add_picture">Add picture</string>
+    <string name="search_suggestions">Title, brand, type</string>
 
     // ids
     <item name="item_click_support" type="id" />

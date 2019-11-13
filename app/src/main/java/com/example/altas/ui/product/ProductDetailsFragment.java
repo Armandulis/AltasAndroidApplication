@@ -1,4 +1,4 @@
-package com.example.altas.ui.product.details;
+package com.example.altas.ui.product;
 
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
@@ -31,7 +31,6 @@ public class ProductDetailsFragment extends Fragment {
     private TextView textViewProductBrand;
     private TextView textViewProductAmount;
     private ImageView textViewProductImage;
-    private Button buttonEdit;
 
     private FloatingActionButton buttonAddToCart;
 
@@ -68,13 +67,6 @@ public class ProductDetailsFragment extends Fragment {
                 addToCart();
             }
         });
-        buttonEdit = root.findViewById(R.id.button_edit_product_details);
-        buttonEdit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                handleEdit();
-            }
-        });
 
 
         putProductsValuesToLayout();
@@ -82,14 +74,6 @@ public class ProductDetailsFragment extends Fragment {
 
         return root;
     }
-
-    /**
-     * Handles edit button after user clicked on button
-     */
-    private void handleEdit() {
-        // TODO add to cart
-    }
-
     /**
      * Handles adding product to cart
      */
