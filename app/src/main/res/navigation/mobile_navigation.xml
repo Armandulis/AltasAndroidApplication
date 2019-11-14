@@ -16,6 +16,11 @@
         android:label="@string/title_shop"
         tools:layout="@layout/fragment_shop" />
     <fragment
+        android:id="@+id/navigation_basket"
+        android:name="com.example.altas.ui.basket.BasketFragment"
+        android:label="@string/title_basket"
+        tools:layout="@layout/fragment_basket" />
+    <fragment
         android:id="@+id/navigation_about"
         android:name="com.example.altas.ui.about.AboutFragment"
         android:label="@string/title_about"
@@ -25,4 +30,5 @@
         android:name="com.example.altas.ui.product.ProductDetailsFragment"
         android:label="@string/title_details"
         tools:layout="@layout/fragment_product_details" />
+
 </navigation>

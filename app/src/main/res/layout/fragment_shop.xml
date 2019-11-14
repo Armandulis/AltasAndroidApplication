@@ -33,19 +33,21 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:text="@string/search"
-            app:layout_constraintBottom_toBottomOf="@+id/editText"
+            app:backgroundTint="@color/lightPrimary"
+            app:layout_constraintBottom_toBottomOf="@+id/edit_text_search_product"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/editText" />
+            app:layout_constraintTop_toTopOf="@+id/edit_text_search_product" />
 
         <EditText
-            android:id="@+id/editText"
+            android:id="@+id/edit_text_search_product"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             android:ems="10"
-            android:inputType="textPersonName"
             android:hint="@string/search_suggestions"
+            app:backgroundTint="@color/lightPrimary"
+            android:inputType="textPersonName"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/button_search_product"
             app:layout_constraintStart_toStartOf="parent"

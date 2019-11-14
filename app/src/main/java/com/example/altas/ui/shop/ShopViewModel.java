@@ -36,6 +36,7 @@ public class ShopViewModel extends ViewModel {
 
     /**
      * Gets paginated products list and puts it in the list
+     *
      * @param currentPage Int, Current page of the product List
      * @param orderBy     String, Order argument
      * @param filterBy    String, Filtering argument
@@ -68,5 +69,22 @@ public class ShopViewModel extends ViewModel {
     public void clearList() {
         productsListMutableLiveData = new MutableLiveData<>();
         productsList = new ArrayList<>();
+    }
+
+    /**
+     * Calls repository to search for product
+     *
+     * @param searchWord String that user provided
+     */
+    void searchProduct(String searchWord) {
+
+        this.productsListMutableLiveData.postValue( productRepository.searchProduct(searchWord) );
+    }
+
+    /**
+     * Sets earlier loaded items to MutableLiveData
+     */
+    void clearSearch(){
+        this.productsListMutableLiveData.postValue(productsList);
     }
 }

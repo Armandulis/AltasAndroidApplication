@@ -4,10 +4,13 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -16,8 +19,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.altas.Models.Product;
 import com.example.altas.R;
+import com.example.altas.repositories.ProductRepository;
 import com.example.altas.ui.list.adepters.ItemClickSupport;
 import com.example.altas.ui.list.adepters.ShopListAdapter;
+import com.google.android.material.snackbar.Snackbar;
+
+import java.util.ArrayList;
 
 /**
  * public class ShopFragment that extends Fragment,
@@ -33,6 +40,8 @@ public class ShopFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private ShopListAdapter mAdapter;
     private LinearLayoutManager mLayoutManager;
+    private EditText mEditTextSearch;
+    private Button mButtonSearch;
 
     private int currentPage = DEFAULT_PAGE;
 
@@ -47,6 +56,8 @@ public class ShopFragment extends Fragment {
 
         // Inflate shop fragment's view
         View shopFragmentRoot = inflater.inflate(R.layout.fragment_shop, container, false);
+        mEditTextSearch = shopFragmentRoot.findViewById(R.id.edit_text_search_product);
+        mButtonSearch = shopFragmentRoot.findViewById(R.id.button_search_product);
 
         // Initialize ViewModel
         mViewModel = ViewModelProviders.of(this).get(ShopViewModel.class);
@@ -62,9 +73,16 @@ public class ShopFragment extends Fragment {
         // Pagination
         mRecyclerView.addOnScrollListener(getProductsListScrollListener());
 
-        // Specify an adapter and pass in our data model list
-        mAdapter = new ShopListAdapter(mViewModel.productsListMutableLiveData.getValue(), getContext());
-        mRecyclerView.setAdapter(mAdapter);
+        mViewModel.productsListMutableLiveData.observe(this, new Observer<ArrayList<Product>>() {
+            @Override
+            public void onChanged(ArrayList<Product> products) {
+
+                // Specify an adapter and pass in our data model list
+                mAdapter = new ShopListAdapter(mViewModel.productsListMutableLiveData.getValue(), getContext());
+                mRecyclerView.setAdapter(mAdapter);
+            }
+        });
+
 
         // Set up on click Listener
         ItemClickSupport.addTo(mRecyclerView)
@@ -78,7 +96,51 @@ public class ShopFragment extends Fragment {
                     }
                 });
 
+        mButtonSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                handleSearchButton();
+
+            }
+        });
+
         return shopFragmentRoot;
+    }
+
+    private void handleSearchButton() {
+
+        String searchWord = mEditTextSearch.getText().toString();
+        if (!searchWord.equals("")) {
+            if (mButtonSearch.getText().toString().equals(getString(R.string.search))) {
+                mButtonSearch.setText(R.string.clear);
+                mViewModel.searchProduct(searchWord);
+            } else {
+
+                mButtonSearch.setText(R.string.search);
+                mViewModel.clearSearch();
+                mEditTextSearch.setText("");
+
+            }
+        } else {
+            // Show SnackBar and and close dialog
+            Snackbar.make(getParentFragment().getView(), R.string.no_search_was_provided, Snackbar.LENGTH_SHORT)
+                    .show();
+        }
+    }
+
+    /**
+     * Clears Search word and changes button text
+     */
+    private void handleClearSearch() {
+
+    }
+
+    /**
+     * Gets input from edit text and searches for product with it, changes button text
+     */
+    private void handleSearchProduct() {
+
+
     }
 
     /**
