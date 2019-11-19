@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.altas.MainActivity;
+import com.example.altas.Models.Filter;
 import com.example.altas.Models.Product;
 import com.example.altas.R;
 import com.example.altas.repositories.ProductRepository;
@@ -53,10 +54,15 @@ public class ShopFragment extends Fragment {
     private LinearLayoutManager mLayoutManager;
     private EditText mEditTextSearch;
     private Button mButtonSearch;
+    private Button mButtonReset;
+    private Spinner spinnerOrder;
     private ConstraintLayout filterLayout;
+
+    private String orderValue;
 
     private int currentPage = DEFAULT_PAGE;
     private boolean isSearchBarHidden = true;
+
 
     // Not sure why we need this, keep it here until we find out
     public static ShopFragment newInstance() {
@@ -71,6 +77,8 @@ public class ShopFragment extends Fragment {
         View shopFragmentRoot = inflater.inflate(R.layout.fragment_shop, container, false);
         mEditTextSearch = shopFragmentRoot.findViewById(R.id.edit_text_search_product);
         mButtonSearch = shopFragmentRoot.findViewById(R.id.button_search_product);
+
+
 
         // Initialize ViewModel
         mViewModel = ViewModelProviders.of(this).get(ShopViewModel.class);
@@ -90,14 +98,14 @@ public class ShopFragment extends Fragment {
 
         setHasOptionsMenu(true);
 
-        Spinner spinner = (Spinner) shopFragmentRoot.findViewById(R.id.shop_spinner_order);
-// Create an ArrayAdapter using the string array and a default spinner layout
+        spinnerOrder = shopFragmentRoot.findViewById(R.id.shop_spinner_order);
+        // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
                 R.array.order_options, android.R.layout.simple_spinner_item);
-// Specify the layout to use when the list of choices appears
+        // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-// Apply the adapter to the spinner
-        spinner.setAdapter(adapter);
+        // Apply the adapter to the spinner
+        spinnerOrder.setAdapter(adapter);
 
         // Pagination
         mRecyclerView.addOnScrollListener(getProductsListScrollListener());
@@ -133,7 +141,27 @@ public class ShopFragment extends Fragment {
             }
         });
 
+        mButtonReset = shopFragmentRoot.findViewById(R.id.button_reset_search);
+        mButtonReset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                handleResetButton();
+            }
+        });
+
         return shopFragmentRoot;
+    }
+
+    /**
+     * Resets filters and gets products
+     */
+    private void handleResetButton() {
+        mEditTextSearch.setText("");
+        spinnerOrder.setSelection(0);
+        orderValue = spinnerOrder.getSelectedItem().toString();
+        mViewModel.clearSearch();
+        mViewModel.getPaginatedProductList();
+
     }
 
     @Override
@@ -144,19 +172,14 @@ public class ShopFragment extends Fragment {
     }
 
     private void handleSearchButton() {
-
         String searchWord = mEditTextSearch.getText().toString();
+
         if (!searchWord.equals("")) {
-            if (mButtonSearch.getText().toString().equals(getString(R.string.search))) {
-                mButtonSearch.setText(R.string.clear);
-                mViewModel.searchProduct(searchWord);
-            } else {
+            mViewModel.filter.searchWord = searchWord;
+            orderValue = spinnerOrder.getSelectedItem().toString();
+            mViewModel.filter.orderBy = orderValue;
+            mViewModel.getPaginatedProductList();
 
-                mButtonSearch.setText(R.string.search);
-                mViewModel.clearSearch();
-                mEditTextSearch.setText("");
-
-            }
         } else {
             // Show SnackBar and and close dialog
             Snackbar.make(getParentFragment().getView(), R.string.no_search_was_provided, Snackbar.LENGTH_SHORT)
@@ -215,7 +238,7 @@ public class ShopFragment extends Fragment {
                             && totalItemCount >= PAGE_SIZE) {
 
                         // Get paginated list
-                        mViewModel.getPaginatedProductList(currentPage, "", "");
+                        mViewModel.getPaginatedProductList();
                         mAdapter.notifyDataSetChanged();
                         currentPage++;
                     }
@@ -233,17 +256,15 @@ public class ShopFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         filterLayout.setVisibility(View.VISIBLE);
-        if( !isSearchBarHidden)
-        {
+        if (!isSearchBarHidden) {
             isSearchBarHidden = true;
             filterLayout.animate().translationY(-500);
-        }
-        else
-        {
+        } else {
 
             isSearchBarHidden = false;
             filterLayout.animate().translationY(0);
         }
         return super.onOptionsItemSelected(item);
     }
+
 }

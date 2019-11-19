@@ -3,6 +3,7 @@ package com.example.altas.ui.shop;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.altas.Models.Filter;
 import com.example.altas.Models.Product;
 import com.example.altas.repositories.ProductRepository;
 
@@ -20,6 +21,8 @@ public class ShopViewModel extends ViewModel {
     public boolean isLoading = false;
     public boolean isLastPage = false;
 
+    public Filter filter = new Filter();
+
     public ShopViewModel() {
 
         // Initialize variables
@@ -28,7 +31,7 @@ public class ShopViewModel extends ViewModel {
         productsListMutableLiveData = new MutableLiveData<>();
 
         // Get first page products
-        productsList.addAll(productRepository.getPaginatedProducts(ShopFragment.DEFAULT_PAGE, "", ""));
+        productsList.addAll(productRepository.getPaginatedProducts(filter));
 
         // Set set products list to MutableLiveData
         productsListMutableLiveData.setValue(productsList);
@@ -36,15 +39,16 @@ public class ShopViewModel extends ViewModel {
 
     /**
      * Gets paginated products list and puts it in the list
-     *
-     * @param currentPage Int, Current page of the product List
-     * @param orderBy     String, Order argument
-     * @param filterBy    String, Filtering argument
      */
-    public void getPaginatedProductList(int currentPage, String orderBy, String filterBy) {
+    public void getPaginatedProductList() {
         // While getting products we set loading to true
         this.isLoading = true;
-        productsList.addAll(productRepository.getPaginatedProducts(currentPage, orderBy, filterBy));
+
+        // Get last item for pagination reasons
+        Product product = productsList.get( productsList.size()-1 );
+        filter.lastProductId = product.id ;
+
+        productsList.addAll(productRepository.getPaginatedProducts(filter));
         // After we got products we put loading to false
         this.isLoading = false;
     }
@@ -69,16 +73,6 @@ public class ShopViewModel extends ViewModel {
     public void clearList() {
         productsListMutableLiveData = new MutableLiveData<>();
         productsList = new ArrayList<>();
-    }
-
-    /**
-     * Calls repository to search for product
-     *
-     * @param searchWord String that user provided
-     */
-    void searchProduct(String searchWord) {
-
-        this.productsListMutableLiveData.postValue( productRepository.searchProduct(searchWord) );
     }
 
     /**

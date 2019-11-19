@@ -27,7 +27,7 @@
         android:layout_width="0dp"
         android:layout_height="119dp"
         android:background="@color/light_gray"
-        android:visibility="gone"
+
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -36,11 +36,23 @@
             android:id="@+id/button_search_product"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
             android:text="@string/search"
             app:backgroundTint="@color/lightPrimary"
-            app:layout_constraintEnd_toEndOf="@+id/edit_text_search_product"
-            app:layout_constraintTop_toBottomOf="@+id/edit_text_search_product"
+            app:layout_constraintBottom_toBottomOf="@+id/edit_text_search_product"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/edit_text_search_product"
+            app:srcCompat="@drawable/ic_phone_black_24dp" />
+
+        <Button
+            android:id="@+id/button_reset_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/reset"
+            app:backgroundTint="@color/lightPrimary"
+            app:layout_constraintEnd_toEndOf="@+id/button_search_product"
+            app:layout_constraintStart_toStartOf="@+id/button_search_product"
+            app:layout_constraintTop_toTopOf="@+id/textView9"
             app:srcCompat="@drawable/ic_phone_black_24dp" />
 
         <Spinner
@@ -57,12 +69,12 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="8dp"
             android:ems="10"
             android:hint="@string/search_suggestions"
             android:inputType="textPersonName"
             app:backgroundTint="@color/lightPrimary"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/button_search_product"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

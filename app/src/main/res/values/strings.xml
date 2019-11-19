@@ -72,6 +72,7 @@
     <string name="total_amount_of_items">Total amount of items:</string>
     <string name="total_price">Total price:</string>
     <string name="order_types">Order by:</string>
+    <string name="reset">Reset</string>
 
     // ids
     <item name="item_click_support" type="id" />

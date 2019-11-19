@@ -2,7 +2,7 @@ package com.example.altas.Models;
 
 public class Filter {
 
-    int currentItem;
-    String orderBy;
-    String searchWord;
+    public String lastProductId;
+    public String orderBy = "Price";
+    public String searchWord;
 }
