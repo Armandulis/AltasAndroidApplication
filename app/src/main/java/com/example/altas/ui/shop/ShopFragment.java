@@ -1,14 +1,23 @@
 package com.example.altas.ui.shop;
 
+import android.content.ClipData;
 import android.os.Bundle;
+import android.provider.DocumentsContract;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -17,11 +26,13 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.altas.MainActivity;
 import com.example.altas.Models.Product;
 import com.example.altas.R;
 import com.example.altas.repositories.ProductRepository;
 import com.example.altas.ui.list.adepters.ItemClickSupport;
 import com.example.altas.ui.list.adepters.ShopListAdapter;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
@@ -42,8 +53,10 @@ public class ShopFragment extends Fragment {
     private LinearLayoutManager mLayoutManager;
     private EditText mEditTextSearch;
     private Button mButtonSearch;
+    private ConstraintLayout filterLayout;
 
     private int currentPage = DEFAULT_PAGE;
+    private boolean isSearchBarHidden = true;
 
     // Not sure why we need this, keep it here until we find out
     public static ShopFragment newInstance() {
@@ -66,9 +79,25 @@ public class ShopFragment extends Fragment {
         mRecyclerView = shopFragmentRoot.findViewById(R.id.shop_products_recycler_view);
         mRecyclerView.setHasFixedSize(true);
 
+        filterLayout = shopFragmentRoot.findViewById(R.id.shop_filtering_layout);
+
         // Use a linear layout manager
         mLayoutManager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
+
+
+        filterLayout.animate().translationY(-500);
+
+        setHasOptionsMenu(true);
+
+        Spinner spinner = (Spinner) shopFragmentRoot.findViewById(R.id.shop_spinner_order);
+// Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
+                R.array.order_options, android.R.layout.simple_spinner_item);
+// Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+// Apply the adapter to the spinner
+        spinner.setAdapter(adapter);
 
         // Pagination
         mRecyclerView.addOnScrollListener(getProductsListScrollListener());
@@ -105,6 +134,13 @@ public class ShopFragment extends Fragment {
         });
 
         return shopFragmentRoot;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        // Inflate the menu items for use in the action bar
+        inflater.inflate(R.menu.shop_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     private void handleSearchButton() {
@@ -191,5 +227,23 @@ public class ShopFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        filterLayout.setVisibility(View.VISIBLE);
+        if( !isSearchBarHidden)
+        {
+            isSearchBarHidden = true;
+            filterLayout.animate().translationY(-500);
+        }
+        else
+        {
+
+            isSearchBarHidden = false;
+            filterLayout.animate().translationY(0);
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -16,13 +17,17 @@
         android:scrollbars="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/shop_filtering_layout" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/shop_filtering_layout"
-        android:layout_width="395dp"
-        android:layout_height="85dp"
+        android:layout_width="0dp"
+        android:layout_height="119dp"
+        android:background="@color/light_gray"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -31,27 +36,46 @@
             android:id="@+id/button_search_product"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp"
             android:text="@string/search"
             app:backgroundTint="@color/lightPrimary"
-            app:layout_constraintBottom_toBottomOf="@+id/edit_text_search_product"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/edit_text_search_product" />
+            app:layout_constraintEnd_toEndOf="@+id/edit_text_search_product"
+            app:layout_constraintTop_toBottomOf="@+id/edit_text_search_product"
+            app:srcCompat="@drawable/ic_phone_black_24dp" />
+
+        <Spinner
+            android:id="@+id/shop_spinner_order"
+            android:layout_width="153dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            app:layout_constraintStart_toStartOf="@+id/edit_text_search_product"
+            app:layout_constraintTop_toBottomOf="@+id/textView9" />
 
         <EditText
             android:id="@+id/edit_text_search_product"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
             android:ems="10"
             android:hint="@string/search_suggestions"
-            app:backgroundTint="@color/lightPrimary"
             android:inputType="textPersonName"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/button_search_product"
+            app:backgroundTint="@color/lightPrimary"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <TextView
+            android:id="@+id/textView9"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/order_types"
+            app:layout_constraintStart_toStartOf="@+id/shop_spinner_order"
+            app:layout_constraintTop_toBottomOf="@+id/edit_text_search_product" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -71,8 +71,15 @@
     <string name="estimate_delivery_time">Estimated delivery time:</string>
     <string name="total_amount_of_items">Total amount of items:</string>
     <string name="total_price">Total price:</string>
+    <string name="order_types">Order by:</string>
 
     // ids
     <item name="item_click_support" type="id" />
+
+    <string-array name="order_options">
+        <item>Price</item>
+        <item>Brand</item>
+        <item>Type</item>
+    </string-array>
 
 </resources>
