@@ -9,6 +9,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -78,8 +79,6 @@ public class ShopFragment extends Fragment {
         mEditTextSearch = shopFragmentRoot.findViewById(R.id.edit_text_search_product);
         mButtonSearch = shopFragmentRoot.findViewById(R.id.button_search_product);
 
-
-
         // Initialize ViewModel
         mViewModel = ViewModelProviders.of(this).get(ShopViewModel.class);
 
@@ -106,6 +105,18 @@ public class ShopFragment extends Fragment {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
         spinnerOrder.setAdapter(adapter);
+
+        spinnerOrder.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                handleSortSelected(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         // Pagination
         mRecyclerView.addOnScrollListener(getProductsListScrollListener());
@@ -150,6 +161,13 @@ public class ShopFragment extends Fragment {
         });
 
         return shopFragmentRoot;
+    }
+
+    private void handleSortSelected(int position) {
+        String[] orderTypes = getResources().getStringArray(R.array.order_options);
+        orderValue = orderTypes[position];
+        mViewModel.filter.orderBy = orderValue;
+        mViewModel.getPaginatedProductList();
     }
 
     /**
