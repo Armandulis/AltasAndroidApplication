@@ -173,7 +173,7 @@ public class ShopFragment extends Fragment {
                 Product product = mAdapter.getItemFromList(position);
                 basketRepository.addProductToBasket(product.id);
             }
-        });
+        }, false);
         mRecyclerView.setAdapter(mAdapter);
     }
 

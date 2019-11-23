@@ -26,6 +26,7 @@ public class ShopListAdapter extends RecyclerView.Adapter<ShopListAdapter.MyView
     private ArrayList<Product> dataModelList;
     private Context mContext;
     IRecyclerViewButtonClickListener basketButtonClickListener;
+    private boolean isBasket;
 
 
     /**
@@ -62,13 +63,16 @@ public class ShopListAdapter extends RecyclerView.Adapter<ShopListAdapter.MyView
          * @param product Product
          * @param context Context
          */
-        void bindData(final Product product, Context context) {
+        void bindData(final Product product, Context context, boolean isBasket) {
             cardImageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.logo_lt));
             titleTextView.setText(product.name);
             priceTextView.setText(product.price);
             brandTextView.setText(product.brand);
 
-
+            // If it is basket, we want to change image for basket button
+            if(isBasket){
+                buttonAddToCart.setImageResource(R.drawable.ic_shopping_cart_remove_black_24dp);
+            }
         }
 
         @Override
@@ -83,10 +87,11 @@ public class ShopListAdapter extends RecyclerView.Adapter<ShopListAdapter.MyView
      * @param modelList Array<Product>
      * @param context   Context
      */
-    public ShopListAdapter(ArrayList<Product> modelList, Context context, IRecyclerViewButtonClickListener listener) {
+    public ShopListAdapter(ArrayList<Product> modelList, Context context, IRecyclerViewButtonClickListener listener, boolean isBasket) {
         dataModelList = modelList;
         mContext = context;
         this.basketButtonClickListener = listener;
+        this.isBasket = isBasket;
     }
 
     @NonNull
@@ -104,7 +109,7 @@ public class ShopListAdapter extends RecyclerView.Adapter<ShopListAdapter.MyView
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         // Bind data for the item at position
-        holder.bindData(dataModelList.get(position), mContext);
+        holder.bindData(dataModelList.get(position), mContext, isBasket);
     }
 
     @Override

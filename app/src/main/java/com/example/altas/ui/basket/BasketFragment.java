@@ -89,7 +89,6 @@ public class BasketFragment extends Fragment {
             }
         });
 
-
         initializeBasketProducts();
 
         textViewAmountOfProducts.setText(basketViewModel.getProductsCount() + "");
@@ -106,7 +105,7 @@ public class BasketFragment extends Fragment {
         String basketUUID = prefs.getString(MainActivity.BASKET_UUID, null);
 
         // Specify an adapter and pass in our data model which is products from basket
-        mAdapter = new ShopListAdapter(basketViewModel.getBasketProducts(basketUUID), getContext(), handleRemoveButtonClicked());
+        mAdapter = new ShopListAdapter(basketViewModel.getBasketProducts(basketUUID), getContext(), handleRemoveButtonClicked(), true);
         mRecyclerView.setAdapter(mAdapter);
 
     }

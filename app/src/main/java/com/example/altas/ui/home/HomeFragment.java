@@ -49,7 +49,7 @@ public class HomeFragment extends Fragment {
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         // Specify an adapter and pass in our data model list
-        mAdapter = new ShopListAdapter(mViewModel.productsListMutableLiveData.getValue(), getContext(), handleBasketButtonClickListener());
+        mAdapter = new ShopListAdapter(mViewModel.productsListMutableLiveData.getValue(), getContext(), handleBasketButtonClickListener(), false);
         mRecyclerView.setAdapter(mAdapter);
 
         // Set up on click Listeners
