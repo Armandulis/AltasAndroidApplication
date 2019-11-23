@@ -1,5 +1,7 @@
 package com.example.altas.ui.shop;
 
+import android.widget.ArrayAdapter;
+
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -23,6 +25,9 @@ public class ShopViewModel extends ViewModel {
 
     public Filter filter = new Filter();
 
+    /**
+     * ShopViewModel constructor
+     */
     public ShopViewModel() {
 
         // Initialize variables
@@ -45,8 +50,8 @@ public class ShopViewModel extends ViewModel {
         this.isLoading = true;
 
         // Get last item for pagination reasons
-        Product product = productsList.get( productsList.size()-1 );
-        filter.lastProductId = product.id ;
+        Product product = productsList.get(productsList.size() - 1);
+        filter.lastProductId = product.id;
 
         productsList.addAll(productRepository.getPaginatedProducts(filter));
         // After we got products we put loading to false
@@ -76,9 +81,11 @@ public class ShopViewModel extends ViewModel {
     }
 
     /**
-     * Sets earlier loaded items to MutableLiveData
+     * Sets earlier loaded items to MutableLiveData and resets filter
      */
-    void clearSearch(){
+    void clearSearchAndFilter() {
+        filter = new Filter();
+        productsList = new ArrayList<Product>();
         this.productsListMutableLiveData.postValue(productsList);
     }
 }

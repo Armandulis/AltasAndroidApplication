@@ -27,6 +27,7 @@
         android:layout_width="0dp"
         android:layout_height="119dp"
         android:background="@color/light_gray"
+        android:visibility="gone"
 
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

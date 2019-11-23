@@ -2,17 +2,11 @@ package com.example.altas.ui.product;
 
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toolbar;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -21,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import com.example.altas.MainActivity;
 import com.example.altas.Models.Product;
 import com.example.altas.R;
+import com.example.altas.repositories.BasketRepository;
 import com.example.altas.ui.shop.ShopFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -38,26 +33,18 @@ public class ProductDetailsFragment extends Fragment {
     private ImageView textViewProductImage;
 
     private FloatingActionButton buttonAddToCart;
+    private BasketRepository basketRepository;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        // Get product
-        this.product = (Product) getArguments().getSerializable(ShopFragment.SELECTED_PRODUCT_KEY);
-
         // Initialize fragment's layout
         View root = inflater.inflate(R.layout.fragment_product_details, container, false);
 
-        // Set up Action bar
-        ActionBar actionBar = ((MainActivity) getActivity()).getSupportActionBar();
-        if (actionBar != null) {
-            // Disable back button in toolbar and change it's title if it exists
-            actionBar.setDisplayHomeAsUpEnabled(false);
-            actionBar.setTitle(product.name);
-        }
-
         // Initialize class variables
+        this.product = (Product) getArguments().getSerializable(ShopFragment.SELECTED_PRODUCT_KEY);
+        basketRepository = new BasketRepository();
         textViewProductDescription = root.findViewById(R.id.text_view_product_details_description);
         textViewProductDescription.setMovementMethod(new ScrollingMovementMethod());
         textViewProductTitle = root.findViewById(R.id.text_view_product_details_title);
@@ -73,17 +60,24 @@ public class ProductDetailsFragment extends Fragment {
             }
         });
 
+        // Set up Action bar
+        ActionBar actionBar = ((MainActivity) getActivity()).getSupportActionBar();
+        if (actionBar != null) {
+            // Disable back button in toolbar and change it's title if it exists
+            actionBar.setDisplayHomeAsUpEnabled(false);
+            actionBar.setTitle(product.name);
+        }
 
         putProductsValuesToLayout();
 
-
         return root;
     }
+
     /**
      * Handles adding product to cart
      */
     private void addToCart() {
-        // TODO add to cart
+        basketRepository.addProductToBasket(product.id);
     }
 
     /**

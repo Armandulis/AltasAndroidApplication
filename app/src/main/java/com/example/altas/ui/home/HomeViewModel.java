@@ -1,15 +1,16 @@
 package com.example.altas.ui.home;
 
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.altas.Models.Product;
 import com.example.altas.repositories.ProductRepository;
-import com.example.altas.ui.shop.ShopFragment;
 
 import java.util.ArrayList;
 
+/**
+ * Public class HomeViewModel that extends ViewModel
+ */
 public class HomeViewModel extends ViewModel {
 
     MutableLiveData<ArrayList<Product>> productsListMutableLiveData;
@@ -19,6 +20,9 @@ public class HomeViewModel extends ViewModel {
 
     private static final int SUGGESTED_PRODUCTS_NUMBER = 3;
 
+    /**
+     * HomeViewModel constructor
+     */
     public HomeViewModel() {
 
         // Initialize variables

@@ -42,7 +42,6 @@ public class AboutFragment extends Fragment {
 
         aboutViewModel = ViewModelProviders.of(this).get(AboutViewModel.class);
 
-
         // Set up TextView that contains email address
         this.textViewAboutEmail = aboutFragmentRoot.findViewById(R.id.text_email);
         aboutViewModel.getAboutEmail().observe(this, new Observer<String>() {
@@ -157,13 +156,11 @@ public class AboutFragment extends Fragment {
             String newEmail = data.getStringExtra(
                     EditAboutEmailDialogFragment.NEW_EMAIL_KEY);
             this.aboutViewModel.setAboutEmail(newEmail);
-        }
-        else if (requestCode == EditAboutPhoneDialogFragment.REQUEST_CODE) {
+        } else if (requestCode == EditAboutPhoneDialogFragment.REQUEST_CODE) {
             String newPhone = data.getStringExtra(
                     EditAboutPhoneDialogFragment.NEW_PHONE_KEY);
             this.aboutViewModel.setAboutPhone(newPhone);
-        }
-        else if (requestCode == EditAboutUsDialogFragment.REQUEST_CODE) {
+        } else if (requestCode == EditAboutUsDialogFragment.REQUEST_CODE) {
             String newAboutUs = data.getStringExtra(
                     EditAboutUsDialogFragment.NEW_ABOUT_KEY);
             this.aboutViewModel.setAboutUs(newAboutUs);

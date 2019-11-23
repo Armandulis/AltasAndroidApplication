@@ -16,6 +16,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.altas.Models.Product;
 import com.example.altas.R;
+import com.example.altas.repositories.BasketRepository;
+import com.example.altas.ui.list.adepters.IRecyclerViewSupport.IRecyclerViewButtonClickListener;
 import com.example.altas.ui.list.adepters.ItemClickSupport;
 import com.example.altas.ui.list.adepters.ShopListAdapter;
 import com.example.altas.ui.shop.ShopFragment;
@@ -30,31 +32,27 @@ public class HomeFragment extends Fragment {
     private ShopListAdapter mAdapter;
     private HomeViewModel mViewModel;
     private ImageView mImageViewGreeting;
+    private BasketRepository basketRepository;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        // Initialize fragment's layout
+        // Initialize variables
         View homeFragmentRoot = inflater.inflate(R.layout.fragment_home, container, false);
         mImageViewGreeting = homeFragmentRoot.findViewById(R.id.image_view_home_greeting);
-
-        // Initialize ViewModel
         mViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
-
-        // Initialize RecyclerView that will hold list of products
         mRecyclerView = homeFragmentRoot.findViewById(R.id.home_products_recycler_view);
-
-        // Use a linear layout manager
         mLayoutManager = new LinearLayoutManager(getContext());
+        basketRepository = new BasketRepository();
+
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-
         // Specify an adapter and pass in our data model list
-        mAdapter = new ShopListAdapter(mViewModel.productsListMutableLiveData.getValue(), getContext());
+        mAdapter = new ShopListAdapter(mViewModel.productsListMutableLiveData.getValue(), getContext(), handleBasketButtonClickListener());
         mRecyclerView.setAdapter(mAdapter);
 
-        // Set up on click Listener
+        // Set up on click Listeners
         ItemClickSupport.addTo(mRecyclerView)
                 .setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
                     @Override
@@ -68,16 +66,41 @@ public class HomeFragment extends Fragment {
                     }
                 });
 
-        mImageViewGreeting.setOnClickListener(new View.OnClickListener() {
+        mImageViewGreeting.setOnClickListener(getListProductOnClickListener());
+
+        return homeFragmentRoot;
+    }
+
+    /**
+     * Handle list item's add to basket button click action that adds product to basket
+     *
+     * @return IRecyclerViewButtonClickListener
+     */
+    private IRecyclerViewButtonClickListener handleBasketButtonClickListener() {
+        return new IRecyclerViewButtonClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                // Handle on "add to basket" button clicked action
+                Product product = mAdapter.getItemFromList(position);
+                basketRepository.addProductToBasket(product.id);
+            }
+        };
+    }
+
+    /**
+     * Handle Product onClick action that navigates user to product's info fragment
+     *
+     * @return OnClickListener
+     */
+    private View.OnClickListener getListProductOnClickListener() {
+        return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Navigate user
+                // Redirect user
                 NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
                 navController.navigate(R.id.navigation_shop);
             }
-        });
-
-        return homeFragmentRoot;
+        };
     }
 
     /**

@@ -6,7 +6,9 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.altas.repositories.AboutRepository;
 
-
+/**
+ * public class AboutViewModel that extends ViewModel
+ */
 public class AboutViewModel extends ViewModel {
 
     private MutableLiveData<String> aboutEmailMutableLiveData;
@@ -15,6 +17,9 @@ public class AboutViewModel extends ViewModel {
 
     private AboutRepository aboutRepository;
 
+    /**
+     * AboutViewModel constructor
+     */
     public AboutViewModel() {
         this.aboutRepository = new AboutRepository();
 

@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.altas.Models.Product;
 import com.example.altas.R;
+import com.example.altas.ui.list.adepters.IRecyclerViewSupport.IRecyclerViewButtonClickListener;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
@@ -23,27 +25,35 @@ public class ShopListAdapter extends RecyclerView.Adapter<ShopListAdapter.MyView
 
     private ArrayList<Product> dataModelList;
     private Context mContext;
+    IRecyclerViewButtonClickListener basketButtonClickListener;
+
 
     /**
      * MyViewHolder holds view items and sets values to them
      */
-    static class MyViewHolder extends RecyclerView.ViewHolder {
+    static class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        private final IRecyclerViewButtonClickListener mListener;
         ImageView cardImageView;
         TextView titleTextView;
         TextView priceTextView;
         TextView brandTextView;
+        FloatingActionButton buttonAddToCart;
 
         /**
          * Initializes local variables to items from layout
          *
          * @param itemView View
          */
-        MyViewHolder(@NonNull View itemView) {
+        MyViewHolder(@NonNull View itemView, IRecyclerViewButtonClickListener listener) {
             super(itemView);
             cardImageView = itemView.findViewById(R.id.shop_list_item_image_view);
             titleTextView = itemView.findViewById(R.id.shop_list_item_title);
             priceTextView = itemView.findViewById(R.id.shop_list_item_price);
             brandTextView = itemView.findViewById(R.id.shop_list_item_brand);
+            buttonAddToCart = itemView.findViewById(R.id.shop_list_item_add_to_cart_button);
+
+            mListener = listener;
+            buttonAddToCart.setOnClickListener(this);
         }
 
         /**
@@ -52,11 +62,18 @@ public class ShopListAdapter extends RecyclerView.Adapter<ShopListAdapter.MyView
          * @param product Product
          * @param context Context
          */
-        void bindData(Product product, Context context) {
+        void bindData(final Product product, Context context) {
             cardImageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.logo_lt));
             titleTextView.setText(product.name);
             priceTextView.setText(product.price);
             brandTextView.setText(product.brand);
+
+
+        }
+
+        @Override
+        public void onClick(View v) {
+            mListener.onClick(v, getAdapterPosition());
         }
     }
 
@@ -66,9 +83,10 @@ public class ShopListAdapter extends RecyclerView.Adapter<ShopListAdapter.MyView
      * @param modelList Array<Product>
      * @param context   Context
      */
-    public ShopListAdapter(ArrayList<Product> modelList, Context context) {
+    public ShopListAdapter(ArrayList<Product> modelList, Context context, IRecyclerViewButtonClickListener listener) {
         dataModelList = modelList;
         mContext = context;
+        this.basketButtonClickListener = listener;
     }
 
     @NonNull
@@ -79,7 +97,7 @@ public class ShopListAdapter extends RecyclerView.Adapter<ShopListAdapter.MyView
                 .inflate(R.layout.shop_list_item_layout, parent, false);
 
         // Return a new view holder
-        return new MyViewHolder(view);
+        return new MyViewHolder(view, basketButtonClickListener);
     }
 
 
