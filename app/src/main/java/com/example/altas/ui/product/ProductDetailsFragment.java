@@ -1,5 +1,6 @@
 package com.example.altas.ui.product;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
@@ -18,6 +19,10 @@ import com.example.altas.R;
 import com.example.altas.repositories.BasketRepository;
 import com.example.altas.ui.shop.ShopFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import static android.content.Context.MODE_PRIVATE;
+import static com.example.altas.MainActivity.ALTAS_PREF_NAME;
+import static com.example.altas.MainActivity.BASKET_UUID;
 
 /**
  * Public class ProductDetailFragment that extends Fragments, handles single Product's details
@@ -77,7 +82,10 @@ public class ProductDetailsFragment extends Fragment {
      * Handles adding product to cart
      */
     private void addToCart() {
-        basketRepository.addProductToBasket(product.id);
+        // Get basket's id
+        SharedPreferences prefs = getActivity().getSharedPreferences(ALTAS_PREF_NAME, MODE_PRIVATE);
+        final String basketUUID = prefs.getString(BASKET_UUID, null);
+        basketRepository.addProductToBasket(basketUUID, product.id);
     }
 
     /**

@@ -50,8 +50,10 @@ public class ShopViewModel extends ViewModel {
         this.isLoading = true;
 
         // Get last item for pagination reasons
-        Product product = productsList.get(productsList.size() - 1);
-        filter.lastProductId = product.id;
+        if (productsList.size() != 0){
+            Product product = productsList.get(productsList.size() - 1);
+            filter.lastProductId = product.id;
+        }
 
         productsList.addAll(productRepository.getPaginatedProducts(filter));
         // After we got products we put loading to false

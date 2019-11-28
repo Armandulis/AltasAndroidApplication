@@ -51,14 +51,20 @@
     <string name="incorrect_password">Please provide a valid password</string>
 
     // Login
-    <string name="login">Login</string>
-    <string name="Register">Register</string>
+    <string name="login_title">Login</string>
     <string name="do_not_have_account_text">Don\'t have an account?</string>
     <string name="do_not_have_click_here_text">Register by clicking here</string>
     <string name="login_text">Login to see your saved basket!</string>
     <string name="login_email">Login email</string>
     <string name="login_password">Login password</string>
     <string name="login_failed_login">Login failed, please try again</string>
+
+    // Register
+    <string name="register_title">Register</string>
+    <string name="register_text">Register to save items to your basket!</string>
+    <string name="register_failed_register">Registration failed, try again</string>
+    <string name="register_passwords_do_not_match">Passwords do not match</string>
+    <string name="register_repeat_password">Repeat password</string>
 
     // Hints
     <string name="hint_email">Email</string>
@@ -83,7 +89,6 @@
     <string name="total_price">Total price:</string>
     <string name="order_types">Order by:</string>
     <string name="reset">Reset</string>
-    <string name="login_register">Login/Register</string>
 
     // ids
     <item name="item_click_support" type="id" />

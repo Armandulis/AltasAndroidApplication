@@ -25,7 +25,7 @@ public class BasketRepository {
         return paginatedProducts;
     }
 
-    public void addProductToBasket(String basketUUID)
+    public void addProductToBasket(String basketUUID, String productId)
     {
 
     }

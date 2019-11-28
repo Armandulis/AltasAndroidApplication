@@ -1,5 +1,6 @@
 package com.example.altas.ui.home;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +23,10 @@ import com.example.altas.ui.list.adepters.ItemClickSupport;
 import com.example.altas.ui.list.adepters.ShopListAdapter;
 import com.example.altas.ui.shop.ShopFragment;
 
+import static android.content.Context.MODE_PRIVATE;
+import static com.example.altas.MainActivity.ALTAS_PREF_NAME;
+import static com.example.altas.MainActivity.BASKET_UUID;
+
 /**
  * Public class HomeFragment that extends Fragment
  */
@@ -32,7 +37,6 @@ public class HomeFragment extends Fragment {
     private ShopListAdapter mAdapter;
     private HomeViewModel mViewModel;
     private ImageView mImageViewGreeting;
-    private BasketRepository basketRepository;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -44,7 +48,6 @@ public class HomeFragment extends Fragment {
         mViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
         mRecyclerView = homeFragmentRoot.findViewById(R.id.home_products_recycler_view);
         mLayoutManager = new LinearLayoutManager(getContext());
-        basketRepository = new BasketRepository();
 
         mRecyclerView.setLayoutManager(mLayoutManager);
 
@@ -80,9 +83,15 @@ public class HomeFragment extends Fragment {
         return new IRecyclerViewButtonClickListener() {
             @Override
             public void onClick(View view, int position) {
-                // Handle on "add to basket" button clicked action
+                // Get basket's id
+                SharedPreferences prefs = getActivity().getSharedPreferences(ALTAS_PREF_NAME, MODE_PRIVATE);
+                String basketUUID = prefs.getString(BASKET_UUID, null);
+
+                // Get Product's id
                 Product product = mAdapter.getItemFromList(position);
-                basketRepository.addProductToBasket(product.id);
+
+                // ADd Product to basket
+                mViewModel.addProductToBasket(basketUUID, product.id);
             }
         };
     }

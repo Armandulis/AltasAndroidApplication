@@ -1,5 +1,6 @@
 package com.example.altas.ui.shop;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -33,6 +34,10 @@ import com.example.altas.ui.list.adepters.ShopListAdapter;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
+
+import static android.content.Context.MODE_PRIVATE;
+import static com.example.altas.MainActivity.ALTAS_PREF_NAME;
+import static com.example.altas.MainActivity.BASKET_UUID;
 
 /**
  * public class ShopFragment that extends Fragment,
@@ -165,13 +170,17 @@ public class ShopFragment extends Fragment {
      * @param products products from the database
      **/
     private void addAdapterToProductsView(ArrayList<Product> products) {
+        // Get basket's id
+        SharedPreferences prefs = getActivity().getSharedPreferences(ALTAS_PREF_NAME, MODE_PRIVATE);
+        final String basketUUID = prefs.getString(BASKET_UUID, null);
+
         // Specify an adapter and pass in our data model list
         mAdapter = new ShopListAdapter(products, getContext(), new IRecyclerViewButtonClickListener() {
             @Override
             public void onClick(View view, int position) {
                 // Handle on "add to basket" button clicked action
                 Product product = mAdapter.getItemFromList(position);
-                basketRepository.addProductToBasket(product.id);
+                basketRepository.addProductToBasket(basketUUID, product.id);
             }
         }, false);
         mRecyclerView.setAdapter(mAdapter);

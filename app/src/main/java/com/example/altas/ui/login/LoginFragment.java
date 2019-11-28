@@ -12,6 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import com.example.altas.MainActivity;
 import com.example.altas.R;
@@ -45,7 +47,7 @@ public class LoginFragment extends Fragment {
         if (actionBar != null) {
             // Disable back button in toolbar and change it's title if it exists
             actionBar.setDisplayHomeAsUpEnabled(false);
-            actionBar.setTitle(R.string.login);
+            actionBar.setTitle(R.string.login_title);
         }
 
         // Add on click listeners
@@ -71,7 +73,12 @@ public class LoginFragment extends Fragment {
      * Navigates user to RegisterFragment
      */
     private void navigateToRegisterFragment() {
+        //Bundle bundle = new Bundle();
+        //bundle.putSerializable(SELECTED_PRODUCT_KEY, product);
 
+        // Navigate user to register fragment
+        NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
+        navController.navigate(R.id.navigation_register);
     }
 
     /**
@@ -96,6 +103,7 @@ public class LoginFragment extends Fragment {
 
                 // Check if submitted password is not empty
                 if (userPassword.equals("")) {
+                    editTextPassword.requestFocus();
                     editTextPassword.setError(getString(R.string.incorrect_password));
                     return;
                 }
@@ -106,7 +114,12 @@ public class LoginFragment extends Fragment {
         };
     }
 
-    /** Tries to log in user, if it fails, inform user*/
+    /**
+     * Tries to log in user, if it fails, inform user
+     *
+     * @param userEmail    user's email
+     * @param userPassword user's password
+     */
     private void loginUser(String userEmail, String userPassword) {
 
         // Log in user
@@ -115,6 +128,7 @@ public class LoginFragment extends Fragment {
         // Check if user was logged in
         if (userSignedIn) {
             // Navigate user to profile fragment
+
 
             return;
         }
