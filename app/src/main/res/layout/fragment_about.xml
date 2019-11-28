@@ -95,33 +95,6 @@
         app:layout_constraintTop_toTopOf="@+id/button_dial_about_phone"
         app:srcCompat="@drawable/ic_email_black_24dp" />
 
-    <Button
-        android:id="@+id/button_edit_about_email"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:text="@string/edit"
-        app:layout_constraintBottom_toBottomOf="@+id/text_final_email"
-        app:layout_constraintStart_toEndOf="@+id/text_final_email" />
-
-    <Button
-        android:id="@+id/button_edit_about_us"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:text="@string/edit"
-        app:layout_constraintBottom_toBottomOf="@+id/text_final_about_us"
-        app:layout_constraintStart_toEndOf="@+id/text_final_about_us" />
-
-    <Button
-        android:id="@+id/button_edit_about_phone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:text="@string/edit"
-        app:layout_constraintBottom_toBottomOf="@+id/text_final_phone"
-        app:layout_constraintStart_toEndOf="@+id/text_final_phone" />
-
 
     <TextView
         android:id="@+id/text_about_us"

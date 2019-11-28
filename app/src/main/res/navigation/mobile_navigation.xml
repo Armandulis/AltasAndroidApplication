@@ -31,4 +31,10 @@
         android:label="@string/title_details"
         tools:layout="@layout/fragment_product_details" />
 
+    <fragment
+        android:id="@+id/navigation_login"
+        android:name="com.example.altas.ui.login.LoginFragment"
+        android:label="@string/title_details"
+        tools:layout="@layout/fragment_login" />
+
 </navigation>
