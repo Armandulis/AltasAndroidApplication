@@ -23,7 +23,7 @@ public class ShopViewModel extends ViewModel {
     public boolean isLoading = false;
     public boolean isLastPage = false;
 
-    public Filter filter = new Filter();
+    public Filter filter;
 
     /**
      * ShopViewModel constructor
@@ -34,6 +34,7 @@ public class ShopViewModel extends ViewModel {
         productRepository = new ProductRepository();
         productsList = new ArrayList<>();
         productsListMutableLiveData = new MutableLiveData<>();
+        filter = new Filter();
 
         // Get first page products
         productsList.addAll(productRepository.getPaginatedProducts(filter));
@@ -50,7 +51,7 @@ public class ShopViewModel extends ViewModel {
         this.isLoading = true;
 
         // Get last item for pagination reasons
-        if (productsList.size() != 0){
+        if (productsList.size() != 0) {
             Product product = productsList.get(productsList.size() - 1);
             filter.lastProductId = product.id;
         }
@@ -75,19 +76,12 @@ public class ShopViewModel extends ViewModel {
     }
 
     /**
-     * Clears productsList and mutableLiveData
-     */
-    public void clearList() {
-        productsListMutableLiveData = new MutableLiveData<>();
-        productsList = new ArrayList<>();
-    }
-
-    /**
      * Sets earlier loaded items to MutableLiveData and resets filter
      */
     void clearSearchAndFilter() {
         filter = new Filter();
         productsList = new ArrayList<Product>();
+
         this.productsListMutableLiveData.postValue(productsList);
     }
 }

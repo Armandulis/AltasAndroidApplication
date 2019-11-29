@@ -30,6 +30,6 @@ public class BasketRepository {
 
     }
 
-    public void removeProductFromBasket(String id) {
+    public void removeProductFromBasket(String basketUUID, String productId) {
     }
 }

@@ -19,6 +19,7 @@ import com.example.altas.R;
 import com.example.altas.repositories.BasketRepository;
 import com.example.altas.ui.shop.ShopFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 import static android.content.Context.MODE_PRIVATE;
 import static com.example.altas.MainActivity.ALTAS_PREF_NAME;
@@ -86,6 +87,10 @@ public class ProductDetailsFragment extends Fragment {
         SharedPreferences prefs = getActivity().getSharedPreferences(ALTAS_PREF_NAME, MODE_PRIVATE);
         final String basketUUID = prefs.getString(BASKET_UUID, null);
         basketRepository.addProductToBasket(basketUUID, product.id);
+
+        // Inform user that product was added
+        Snackbar.make(getParentFragment().getView(), product.name + " " + R.string.product_was_added, Snackbar.LENGTH_SHORT)
+                .show();
     }
 
     /**

@@ -36,6 +36,8 @@ public class LoginFragment extends Fragment {
         View loginFragmentRoot = inflater.inflate(R.layout.fragment_login, container, false);
         mViewModel = ViewModelProviders.of(this).get(LoginViewModel.class);
 
+        // Implement redirect if user is logged in
+
         editTextEmail = loginFragmentRoot.findViewById(R.id.edit_text_login_email);
         editTextPassword = loginFragmentRoot.findViewById(R.id.edit_text_login_password);
         textViewError = loginFragmentRoot.findViewById(R.id.text_view_login_error);
@@ -128,9 +130,8 @@ public class LoginFragment extends Fragment {
         // Check if user was logged in
         if (userSignedIn) {
             // Navigate user to profile fragment
-
-
-            return;
+            NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
+            navController.navigate(R.id.navigation_profile);
         }
 
         // Show Error message

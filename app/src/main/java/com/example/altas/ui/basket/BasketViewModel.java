@@ -2,6 +2,8 @@ package com.example.altas.ui.basket;
 
 import android.util.Log;
 
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.altas.Models.Product;
@@ -14,8 +16,13 @@ import java.util.ArrayList;
  */
 public class BasketViewModel extends ViewModel {
 
+    MutableLiveData<ArrayList<Product>> productsListMutableLiveData;
+    MutableLiveData<Integer> totalProductsMutableLiveData;
+    MutableLiveData<Double> totalPriceMutableLiveData;
     private BasketRepository basketRepository;
     private ArrayList<Product> products;
+    private int totalProducts;
+    private double totalPrice;
 
     /**
      * BasketViewModel constructor
@@ -24,27 +31,47 @@ public class BasketViewModel extends ViewModel {
         // Initialize variables
         products = new ArrayList<>();
         basketRepository = new BasketRepository();
-
+        productsListMutableLiveData = new MutableLiveData<>();
+        totalProductsMutableLiveData = new MutableLiveData<>();
+        totalPriceMutableLiveData = new MutableLiveData<>();
     }
 
     /**
-     * Calls BasketActivity to get products and returns them
+     * Returns Basket products in a way that we can observe changes
+     *
+     * @return LiveData of ArrayList<Product> that were added to basket
+     */
+    public LiveData<ArrayList<Product>> getBasketProductsLive() {
+        return productsListMutableLiveData;
+    }
+
+    /**
+     * Returns amount of products in the basket
+     *
+     * @return Live data of amount of products in it
+     */
+    public LiveData<Integer> getProductCountProductsLive() {
+        return totalProductsMutableLiveData;
+    }
+
+    /**
+     * Returns a total price of all products in the basket
+     *
+     * @return LiveData of double that holds total price
+     */
+    public LiveData<Double> getTotalPriceProductsLive() {
+        return totalPriceMutableLiveData;
+    }
+    /**
+     * Calls BasketActivity to get products and returns them, set price and amount
      *
      * @param basketUUID unique identifier for basket and phone
-     * @return ArrayList<Product> that were added to basket
      */
-    public ArrayList<Product> getBasketProducts(String basketUUID) {
+    public void initializeBasketProducts(String basketUUID) {
         products = basketRepository.getBasket(basketUUID);
-        return products;
-    }
-
-    /**
-     * Returns the amount of product in the basket
-     *
-     * @return int
-     */
-    public int getProductsCount() {
-        return products.size();
+        productsListMutableLiveData.setValue(products);
+        totalProductsMutableLiveData.postValue(products.size());
+        totalPriceMutableLiveData.postValue(getProductsTotalPrice());
     }
 
     /**
@@ -52,7 +79,7 @@ public class BasketViewModel extends ViewModel {
      *
      * @return double
      */
-    public double getProductsTotalPrice() {
+    private double getProductsTotalPrice() {
 
         double price = 0;
         // Tries to parse and add all Product's prices
@@ -68,8 +95,20 @@ public class BasketViewModel extends ViewModel {
     }
 
 
-    public void removeProductFromBasket(String productsId) {
+    /**
+     * Calls repo to remove product and remove product locally, update price and amount
+     *
+     * @param position   of product in array
+     * @param basketId   user's basket id
+     * @param productsId product's id that will be removed
+     */
+    public void removeProductFromBasket(int position, String basketId, String productsId) {
 
+        basketRepository.removeProductFromBasket(basketId, productsId);
+        products.remove(position);
+        productsListMutableLiveData.postValue(products);
+        totalProductsMutableLiveData.postValue(products.size());
+        totalPriceMutableLiveData.postValue(getProductsTotalPrice());
     }
 
 

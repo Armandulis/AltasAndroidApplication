@@ -22,6 +22,7 @@ import com.example.altas.ui.list.adepters.IRecyclerViewSupport.IRecyclerViewButt
 import com.example.altas.ui.list.adepters.ItemClickSupport;
 import com.example.altas.ui.list.adepters.ShopListAdapter;
 import com.example.altas.ui.shop.ShopFragment;
+import com.google.android.material.snackbar.Snackbar;
 
 import static android.content.Context.MODE_PRIVATE;
 import static com.example.altas.MainActivity.ALTAS_PREF_NAME;
@@ -90,8 +91,12 @@ public class HomeFragment extends Fragment {
                 // Get Product's id
                 Product product = mAdapter.getItemFromList(position);
 
-                // ADd Product to basket
+                // Add Product to basket
                 mViewModel.addProductToBasket(basketUUID, product.id);
+
+                // Inform user that product was added
+                Snackbar.make(getParentFragment().getView(), product.name + " " + R.string.product_was_added, Snackbar.LENGTH_SHORT)
+                        .show();
             }
         };
     }

@@ -12,10 +12,15 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import com.example.altas.MainActivity;
 import com.example.altas.R;
 
+/**
+ * public class RegisterFragment that extends Fragment,
+ */
 public class RegisterFragment extends Fragment {
 
     private RegisterViewModel mViewModel;
@@ -86,8 +91,10 @@ public class RegisterFragment extends Fragment {
 
         // Check if registration was successful
         if (userRegistered) {
+
             // Navigate user to profile
-            return;
+            NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
+            navController.navigate(R.id.navigation_profile);
         }
 
         // Inform user about failed registration

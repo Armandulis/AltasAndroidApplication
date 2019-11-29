@@ -181,6 +181,9 @@ public class ShopFragment extends Fragment {
                 // Handle on "add to basket" button clicked action
                 Product product = mAdapter.getItemFromList(position);
                 basketRepository.addProductToBasket(basketUUID, product.id);
+                // Inform user that product was added
+                Snackbar.make(getParentFragment().getView(), product.name + " " + R.string.product_was_added, Snackbar.LENGTH_SHORT)
+                        .show();
             }
         }, false);
         mRecyclerView.setAdapter(mAdapter);

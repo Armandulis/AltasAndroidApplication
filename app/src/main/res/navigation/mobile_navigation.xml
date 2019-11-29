@@ -42,4 +42,12 @@
         android:name="com.example.altas.ui.register.RegisterFragment"
         android:label="@string/register_title"
         tools:layout="@layout/fragment_login" />
+
+    <fragment
+        android:id="@+id/navigation_profile"
+        android:name="com.example.altas.ui.profile.ProfileFragment"
+        android:label="@string/profile_title"
+        tools:layout="@layout/fragment_profile" />
+
+
 </navigation>

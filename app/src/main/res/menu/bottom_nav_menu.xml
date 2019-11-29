@@ -16,11 +16,13 @@
     <item
         android:id="@+id/navigation_login"
         android:icon="@drawable/ic_person_black_24dp"
-        android:title="@string/login_title" />
+        android:title="@string/profile_title" />
     <item
         android:id="@+id/navigation_about"
         android:icon="@drawable/ic_info_black_24dp"
         android:title="@string/title_about" />
+
+
 
 
 </menu>

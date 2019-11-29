@@ -38,6 +38,10 @@
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
 
+    // Basket
+    <string name="product_was_added">was added to basket</string>
+    <string name="product_was_removed">was removed from basket</string>
+
     // Actions
     <string name="save">Save</string>
     <string name="edit">Edit</string>
@@ -66,6 +70,9 @@
     <string name="register_passwords_do_not_match">Passwords do not match</string>
     <string name="register_repeat_password">Repeat password</string>
 
+    // Profile
+    <string name="profile_title">Profile</string>
+
     // Hints
     <string name="hint_email">Email</string>
     <string name="hint_password">Password</string>
@@ -89,6 +96,7 @@
     <string name="total_price">Total price:</string>
     <string name="order_types">Order by:</string>
     <string name="reset">Reset</string>
+
 
     // ids
     <item name="item_click_support" type="id" />
