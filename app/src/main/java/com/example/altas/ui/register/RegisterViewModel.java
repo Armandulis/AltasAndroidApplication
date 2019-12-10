@@ -1,7 +1,5 @@
 package com.example.altas.ui.register;
 
-import android.view.View;
-
 import androidx.lifecycle.ViewModel;
 
 import com.example.altas.repositories.AuthenticationRepository;

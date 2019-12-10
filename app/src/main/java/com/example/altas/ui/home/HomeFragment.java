@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.altas.Models.Product;
 import com.example.altas.R;
-import com.example.altas.repositories.BasketRepository;
 import com.example.altas.ui.list.adepters.IRecyclerViewSupport.IRecyclerViewButtonClickListener;
 import com.example.altas.ui.list.adepters.ItemClickSupport;
 import com.example.altas.ui.list.adepters.ShopListAdapter;
@@ -95,7 +94,7 @@ public class HomeFragment extends Fragment {
                 mViewModel.addProductToBasket(basketUUID, product.id);
 
                 // Inform user that product was added
-                Snackbar.make(getParentFragment().getView(), product.name + " " + R.string.product_was_added, Snackbar.LENGTH_SHORT)
+                Snackbar.make(getParentFragment().getView(), product.name + " " + getString(R.string.product_was_added), Snackbar.LENGTH_SHORT)
                         .show();
             }
         };

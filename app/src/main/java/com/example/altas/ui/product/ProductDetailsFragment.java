@@ -89,7 +89,7 @@ public class ProductDetailsFragment extends Fragment {
         basketRepository.addProductToBasket(basketUUID, product.id);
 
         // Inform user that product was added
-        Snackbar.make(getParentFragment().getView(), product.name + " " + R.string.product_was_added, Snackbar.LENGTH_SHORT)
+        Snackbar.make(getParentFragment().getView(), product.name + " " + getString(R.string.product_was_added), Snackbar.LENGTH_SHORT)
                 .show();
     }
 

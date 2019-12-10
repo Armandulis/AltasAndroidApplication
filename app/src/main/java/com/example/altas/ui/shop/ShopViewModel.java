@@ -1,7 +1,5 @@
 package com.example.altas.ui.shop;
 
-import android.widget.ArrayAdapter;
-
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 

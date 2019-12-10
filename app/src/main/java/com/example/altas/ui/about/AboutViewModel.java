@@ -56,26 +56,4 @@ public class AboutViewModel extends ViewModel {
     LiveData<String> getAboutUs() {
         return aboutUsMutableLiveData;
     }
-
-
-    /**
-     * @param newEmail Email that will be added to MutableLiveData
-     */
-    void setAboutEmail(String newEmail) {
-        aboutEmailMutableLiveData.setValue(newEmail);
-    }
-
-    /**
-     * @param newPhone Phone that will be added to MutableLiveData
-     */
-    void setAboutPhone(String newPhone) {
-        aboutPhoneMutableLiveData.setValue(newPhone);
-    }
-
-    /**
-     * @param newAboutUs About us text that will be added to MutableLiveData
-     */
-    void setAboutUs(String newAboutUs) {
-        aboutUsMutableLiveData.setValue(newAboutUs);
-    }
 }

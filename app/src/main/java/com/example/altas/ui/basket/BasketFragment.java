@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.Observer;
@@ -21,7 +22,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.altas.MainActivity;
 import com.example.altas.Models.Product;
 import com.example.altas.R;
-import com.example.altas.repositories.BasketRepository;
 import com.example.altas.ui.list.adepters.IRecyclerViewSupport.IRecyclerViewButtonClickListener;
 import com.example.altas.ui.list.adepters.ItemClickSupport;
 import com.example.altas.ui.list.adepters.ShopListAdapter;
@@ -37,6 +37,7 @@ public class BasketFragment extends Fragment {
 
     private TextView textViewPrice;
     private TextView textViewAmountOfProducts;
+    private TextView textViewEmpty;
 
     private Button buttonProceed;
 
@@ -44,6 +45,7 @@ public class BasketFragment extends Fragment {
     private LinearLayoutManager mLayoutManager;
     private ShopListAdapter mAdapter;
     private RecyclerView mRecyclerView;
+    private ConstraintLayout basketLayoutInfo;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -55,6 +57,8 @@ public class BasketFragment extends Fragment {
         textViewPrice = basketFragmentRoot.findViewById(R.id.text_view_basket_price);
         textViewAmountOfProducts = basketFragmentRoot.findViewById(R.id.text_view_basket_amount_products);
         buttonProceed = basketFragmentRoot.findViewById(R.id.button_basket_proceed);
+        textViewEmpty = basketFragmentRoot.findViewById(R.id.text_view_basket_empty);
+        basketLayoutInfo = basketFragmentRoot.findViewById(R.id.layout_basket_info);
 
         // Initialize ViewModel
         basketViewModel = ViewModelProviders.of(this).get(BasketViewModel.class);
@@ -137,6 +141,7 @@ public class BasketFragment extends Fragment {
                 // Specify an adapter and pass in our data model which is products from basket
                 mAdapter = new ShopListAdapter(products, getContext(), handleRemoveButtonClicked(), true);
                 mRecyclerView.setAdapter(mAdapter);
+                hideLayoutIfNoProductsInBasket(products);
             }
         });
     }
@@ -159,7 +164,7 @@ public class BasketFragment extends Fragment {
                 basketViewModel.removeProductFromBasket(position, basketUUID, productClicked.id);
 
                 // Inform user that product was removed
-                Snackbar.make(getParentFragment().getView(), productClicked.name + " " + R.string.product_was_removed, Snackbar.LENGTH_SHORT)
+                Snackbar.make(getParentFragment().getView(), productClicked.name + " " + getString(R.string.product_was_removed), Snackbar.LENGTH_SHORT)
                         .show();
             }
         };
@@ -169,7 +174,12 @@ public class BasketFragment extends Fragment {
      * Navigates user to checkout after user clicked proceed button
      */
     private void handleButtonProceed() {
-        // TODO NAVIGATE TO CHECKOUT
+        // Get basket's id from SharedPreferences
+        SharedPreferences prefs = getActivity().getSharedPreferences(MainActivity.ALTAS_PREF_NAME, FragmentActivity.MODE_PRIVATE);
+        String basketUUID = prefs.getString(MainActivity.BASKET_UUID, null);
+
+        // TODO CHANGE TO "NAVIGATE TO CHECKOUT"
+        basketViewModel.purchaseProducts(basketUUID);
     }
 
     /**
@@ -199,5 +209,22 @@ public class BasketFragment extends Fragment {
         String basketUUID = prefs.getString(MainActivity.BASKET_UUID, null);
         // Initialize products again
         basketViewModel.initializeBasketProducts(basketUUID);
+    }
+
+    /**
+     * Hides layout and shows message to the user if list size is 0
+     *
+     * @param products list of products
+     */
+    private void hideLayoutIfNoProductsInBasket(ArrayList<Product> products) {
+        if (products.size() == 0) {
+            // Hide product's list layout
+            textViewEmpty.setVisibility(View.VISIBLE);
+            basketLayoutInfo.setVisibility(View.GONE);
+        } else {
+            // Show Basket's info
+            textViewEmpty.setVisibility(View.GONE);
+            basketLayoutInfo.setVisibility(View.VISIBLE);
+        }
     }
 }

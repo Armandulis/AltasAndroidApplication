@@ -41,6 +41,7 @@
     // Basket
     <string name="product_was_added">was added to basket</string>
     <string name="product_was_removed">was removed from basket</string>
+    <string name="basket_empty">Your basket is currently empty!</string>
 
     // Actions
     <string name="save">Save</string>
@@ -49,6 +50,17 @@
     <string name="create">Create</string>
     <string name="search">Search</string>
     <string name="clear">Clear</string>
+
+    // Profile
+    <string name="clear_order_item">Confirm received</string>
+    <string name="delivered">Delivered</string>
+    <string name="confirmed_delivery">Delivery confirmed</string>
+    <string name="remove_product">Remove product</string>
+    <string name="user">User</string>
+    <string name="purchase_status">Your purchase status and history:</string>
+    <string name="confirm_delivery_message">was confirmed delivered</string>
+    <string name="confirm_removed_product">was removed from purchase history</string>
+    <string name="no_purchases">Your purchase history is empty</string>
 
     // Invalid Messages
     <string name="incorrect_email">Please provide a valid email</string>

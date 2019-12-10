@@ -25,7 +25,7 @@ public class ShopListAdapter extends RecyclerView.Adapter<ShopListAdapter.MyView
 
     private ArrayList<Product> dataModelList;
     private Context mContext;
-    IRecyclerViewButtonClickListener basketButtonClickListener;
+    private IRecyclerViewButtonClickListener basketButtonClickListener;
     private boolean isBasket;
 
 
