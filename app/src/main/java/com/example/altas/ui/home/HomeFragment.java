@@ -2,6 +2,7 @@ package com.example.altas.ui.home;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,12 +10,15 @@ import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
 import com.example.altas.Models.Product;
 import com.example.altas.R;
 import com.example.altas.ui.list.adepters.IRecyclerViewSupport.IRecyclerViewButtonClickListener;
@@ -22,6 +26,8 @@ import com.example.altas.ui.list.adepters.ItemClickSupport;
 import com.example.altas.ui.list.adepters.ShopListAdapter;
 import com.example.altas.ui.shop.ShopFragment;
 import com.google.android.material.snackbar.Snackbar;
+
+import java.util.ArrayList;
 
 import static android.content.Context.MODE_PRIVATE;
 import static com.example.altas.MainActivity.ALTAS_PREF_NAME;
@@ -38,6 +44,7 @@ public class HomeFragment extends Fragment {
     private HomeViewModel mViewModel;
     private ImageView mImageViewGreeting;
 
+    private RequestQueue queue;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -49,11 +56,16 @@ public class HomeFragment extends Fragment {
         mRecyclerView = homeFragmentRoot.findViewById(R.id.home_products_recycler_view);
         mLayoutManager = new LinearLayoutManager(getContext());
 
+        // Instantiate the RequestQueue.
+        queue = Volley.newRequestQueue(getContext());
+
+        // Initialize suggested products
+        mViewModel.initializeProducts(queue);
+
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         // Specify an adapter and pass in our data model list
-        mAdapter = new ShopListAdapter(mViewModel.productsListMutableLiveData.getValue(), getContext(), handleBasketButtonClickListener(), false);
-        mRecyclerView.setAdapter(mAdapter);
+        mViewModel.productsListMutableLiveData.observe(this, setUpProductsObserver());
 
         // Set up on click Listeners
         ItemClickSupport.addTo(mRecyclerView)
@@ -71,8 +83,30 @@ public class HomeFragment extends Fragment {
 
         mImageViewGreeting.setOnClickListener(getListProductOnClickListener());
 
+
         return homeFragmentRoot;
     }
+
+    /**
+     *  Returns Observer with onChange, when data was changed, set adapter
+     * @return Observer of products list
+     */
+    private Observer<ArrayList<Product>> setUpProductsObserver() {
+        return new Observer<ArrayList<Product>>() {
+            @Override
+            public void onChanged(ArrayList<Product> products) {
+
+                // Check if we have products
+                if (products.size() != 0 ){
+
+                    // Set up adapter
+                    mAdapter = new ShopListAdapter(products, getContext(), handleBasketButtonClickListener(), false);
+                    mRecyclerView.setAdapter(mAdapter);
+                }
+            }
+        };
+    }
+
 
     /**
      * Handle list item's add to basket button click action that adds product to basket
@@ -91,7 +125,7 @@ public class HomeFragment extends Fragment {
                 Product product = mAdapter.getItemFromList(position);
 
                 // Add Product to basket
-                mViewModel.addProductToBasket(basketUUID, product.id);
+                mViewModel.addProductToBasket(basketUUID, product.id, queue);
 
                 // Inform user that product was added
                 Snackbar.make(getParentFragment().getView(), product.name + " " + getString(R.string.product_was_added), Snackbar.LENGTH_SHORT)

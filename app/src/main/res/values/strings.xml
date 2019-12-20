@@ -74,6 +74,7 @@
     <string name="login_email">Login email</string>
     <string name="login_password">Login password</string>
     <string name="login_failed_login">Login failed, please try again</string>
+    <string name="login_show_puchases">Show purchases</string>
 
     // Register
     <string name="register_title">Register</string>

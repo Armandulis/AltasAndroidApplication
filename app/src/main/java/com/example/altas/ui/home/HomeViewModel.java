@@ -1,8 +1,14 @@
 package com.example.altas.ui.home;
 
+import android.util.Log;
+
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
+import com.example.altas.MainActivity;
 import com.example.altas.Models.Filter;
 import com.example.altas.Models.Product;
 import com.example.altas.repositories.BasketRepository;
@@ -36,11 +42,26 @@ public class HomeViewModel extends ViewModel {
         productsListMutableLiveData = new MutableLiveData<>();
         filter = new Filter();
 
-        // Get first page products
-        productsList.addAll(getHomePageProducts());
 
-        // Set set products list to MutableLiveData
+    }
+
+    public void initializeProducts(RequestQueue queue){
+
+        // Set filter and call repo to get products
+        filter.amount = SUGGESTED_PRODUCTS_NUMBER;
+        // Calls basket repo to get certain amount of products
+        // Get first page products
+        productsList.addAll(productRepository.getPaginatedProducts(filter, queue));
+
         productsListMutableLiveData.setValue(productsList);
+        productRepository.productsListMutableLiveData.observeForever(new Observer<ArrayList<Product>>() {
+            @Override
+            public void onChanged(ArrayList<Product> products) {
+                productsListMutableLiveData.setValue(products);
+
+                Log.d("qwe", "def inside frag" + products.size());
+            }
+        });
     }
 
     /**
@@ -49,20 +70,10 @@ public class HomeViewModel extends ViewModel {
      * @param basketId  unique id for user's basket
      * @param productId product's id that will be added to basket
      */
-    public void addProductToBasket(String basketId, String productId) {
+    public void addProductToBasket(String basketId, String productId, RequestQueue queue) {
 
         // Add product to basket
-        basketRepository.addProductToBasket(basketId, productId);
+        basketRepository.addProductToBasket(basketId, productId, queue);
 
-    }
-
-    /**
-     * Calls basket repo to get certain amount of products
-     */
-    public ArrayList<Product> getHomePageProducts() {
-
-        // Set filter and call repo to get products
-        filter.amount = SUGGESTED_PRODUCTS_NUMBER;
-        return productRepository.getPaginatedProducts(filter);
     }
 }

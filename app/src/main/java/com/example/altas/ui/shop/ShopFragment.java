@@ -2,6 +2,7 @@ package com.example.altas.ui.shop;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,6 +26,8 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
 import com.example.altas.Models.Product;
 import com.example.altas.R;
 import com.example.altas.repositories.BasketRepository;
@@ -60,6 +63,7 @@ public class ShopFragment extends Fragment {
 
     private String orderValue;
 
+    private RequestQueue queue;
     private boolean isSearchBarHidden = true;
 
     private BasketRepository basketRepository;
@@ -103,13 +107,15 @@ public class ShopFragment extends Fragment {
         // Pagination
         mRecyclerView.addOnScrollListener(getProductsListScrollListener());
 
+        // Instantiate the RequestQueue.
+        queue = Volley.newRequestQueue(getContext());
+
+        // Initialize suggested products
+        mViewModel.initializeProducts(queue);
+
         // Observe product list changes
-        mViewModel.productsListMutableLiveData.observe(this, new Observer<ArrayList<Product>>() {
-            @Override
-            public void onChanged(ArrayList<Product> products) {
-                addAdapterToProductsView(products);
-            }
-        });
+        observeProductsList();
+
 
         // Set up on click Listeners
         mButtonSearch.setOnClickListener(new View.OnClickListener() {
@@ -139,6 +145,22 @@ public class ShopFragment extends Fragment {
         return shopFragmentRoot;
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    private void observeProductsList() {
+        mViewModel.productsListMutableLiveData.observe(this, new Observer<ArrayList<Product>>() {
+            @Override
+            public void onChanged(ArrayList<Product> products) {
+                if(products.size() != 0){
+                    addAdapterToProductsView(products);
+                }
+            }
+        });
+    }
+
     /**
      * Handles onItemSelected action that get's selected sorting value and gets sorted products
      *
@@ -154,7 +176,8 @@ public class ShopFragment extends Fragment {
 
                 // Call ViewModel to get sorted products
                 mViewModel.filter.orderBy = orderValue;
-                mViewModel.getPaginatedProductList();
+                mViewModel.initializeProducts(queue);
+                observeProductsList();
             }
 
             @Override
@@ -180,7 +203,7 @@ public class ShopFragment extends Fragment {
             public void onClick(View view, int position) {
                 // Handle on "add to basket" button clicked action
                 Product product = mAdapter.getItemFromList(position);
-                basketRepository.addProductToBasket(basketUUID, product.id);
+                basketRepository.addProductToBasket(basketUUID, product.id, queue);
                 // Inform user that product was added
                 Snackbar.make(getParentFragment().getView(), product.name + " " + getString(R.string.product_was_added), Snackbar.LENGTH_SHORT)
                         .show();
@@ -198,7 +221,8 @@ public class ShopFragment extends Fragment {
         orderValue = spinnerOrder.getSelectedItem().toString();
         mViewModel.clearSearchAndFilter();
         // Get products without any values set to filter
-        mViewModel.getPaginatedProductList();
+        mViewModel.initializeProducts(queue);
+        observeProductsList();
     }
 
     @Override
@@ -214,6 +238,7 @@ public class ShopFragment extends Fragment {
     private void handleSearchButton() {
         // Check if search value is not empty
         String searchWord = mEditTextSearch.getText().toString();
+
         if (!searchWord.equals("")) {
             // Set up filter
             mViewModel.filter.searchWord = searchWord;
@@ -221,7 +246,8 @@ public class ShopFragment extends Fragment {
             mViewModel.filter.orderBy = orderValue;
 
             // Get products with search and order values
-            mViewModel.getPaginatedProductList();
+            mViewModel.initializeProducts(queue);
+            observeProductsList();
 
         } else {
             // Inform user about empty search value
@@ -271,7 +297,8 @@ public class ShopFragment extends Fragment {
                             && totalItemCount >= PAGE_SIZE) {
 
                         // Get paginated list
-                        mViewModel.getPaginatedProductList();
+                        mViewModel.getPaginatedProductList(queue);
+                        observeProductsList();
                         mAdapter.notifyDataSetChanged();
                     }
                 }
@@ -300,5 +327,4 @@ public class ShopFragment extends Fragment {
 
         return super.onOptionsItemSelected(item);
     }
-
 }

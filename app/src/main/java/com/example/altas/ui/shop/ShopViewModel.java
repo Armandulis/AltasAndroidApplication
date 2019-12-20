@@ -1,8 +1,10 @@
 package com.example.altas.ui.shop;
 
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
+import com.android.volley.RequestQueue;
 import com.example.altas.Models.Filter;
 import com.example.altas.Models.Product;
 import com.example.altas.repositories.ProductRepository;
@@ -33,20 +35,34 @@ public class ShopViewModel extends ViewModel {
         productsList = new ArrayList<>();
         productsListMutableLiveData = new MutableLiveData<>();
         filter = new Filter();
+    }
+
+    public void initializeProducts(RequestQueue queue){
 
         // Get first page products
-        productsList.addAll(productRepository.getPaginatedProducts(filter));
+        productsList.addAll(productRepository.getPaginatedProducts(filter, queue));
 
-        // Set set products list to MutableLiveData
-        productsListMutableLiveData.setValue(productsList);
+        productRepository.productsListMutableLiveData.observeForever(new Observer<ArrayList<Product>>() {
+            @Override
+            public void onChanged(ArrayList<Product> products) {
+
+                // While getting products we set loading to true
+                isLoading = true;
+
+                productsList.addAll(products);
+
+                productsListMutableLiveData.setValue(products);
+
+                // After we got products we put loading to false
+                isLoading = false;
+            }
+        });
     }
 
     /**
      * Gets paginated products list and puts it in the list
      */
-    public void getPaginatedProductList() {
-        // While getting products we set loading to true
-        this.isLoading = true;
+    public void getPaginatedProductList(RequestQueue queue) {
 
         // Get last item for pagination reasons
         if (productsList.size() != 0) {
@@ -54,9 +70,7 @@ public class ShopViewModel extends ViewModel {
             filter.lastProductId = product.id;
         }
 
-        productsList.addAll(productRepository.getPaginatedProducts(filter));
-        // After we got products we put loading to false
-        this.isLoading = false;
+        initializeProducts(queue);
     }
 
     /**
@@ -78,7 +92,7 @@ public class ShopViewModel extends ViewModel {
      */
     void clearSearchAndFilter() {
         filter = new Filter();
-        productsList = new ArrayList<Product>();
+        productsList = new ArrayList<>();
 
         this.productsListMutableLiveData.postValue(productsList);
     }

@@ -27,6 +27,8 @@ public class LoginFragment extends Fragment {
     private EditText editTextPassword;
     private TextView textViewError;
 
+    private Button buttonShowPurchases;
+
     private LoginViewModel mViewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -43,6 +45,7 @@ public class LoginFragment extends Fragment {
         textViewError = loginFragmentRoot.findViewById(R.id.text_view_login_error);
         Button buttonLogin = loginFragmentRoot.findViewById(R.id.button_login_login);
         TextView textRegister = loginFragmentRoot.findViewById(R.id.text_view_register_here);
+        buttonShowPurchases = loginFragmentRoot.findViewById(R.id.button_login_show_purchases);
 
         // Set up Action bar
         ActionBar actionBar = ((MainActivity) getActivity()).getSupportActionBar();
@@ -55,8 +58,23 @@ public class LoginFragment extends Fragment {
         // Add on click listeners
         buttonLogin.setOnClickListener(handleButtonLoginListener());
         textRegister.setOnClickListener(handleButtonRegisterListener());
+        buttonShowPurchases.setOnClickListener(handleShowPurchasesListener());
 
         return loginFragmentRoot;
+    }
+
+    /**
+     * Returns a click listener that handles on click action
+     */
+    private View.OnClickListener handleShowPurchasesListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Navigate user to profile fragment
+                NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
+                navController.navigate(R.id.navigation_profile);
+            }
+        };
     }
 
     /**

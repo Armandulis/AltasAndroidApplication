@@ -19,6 +19,8 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
 import com.example.altas.MainActivity;
 import com.example.altas.Models.Product;
 import com.example.altas.R;
@@ -47,6 +49,7 @@ public class BasketFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private ConstraintLayout basketLayoutInfo;
 
+    private RequestQueue queue;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -70,6 +73,9 @@ public class BasketFragment extends Fragment {
         // Use a linear layout manager
         mLayoutManager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
+
+        // Instantiate the RequestQueue.
+        queue = Volley.newRequestQueue(getContext());
 
         // Set up on click Listener
         ItemClickSupport.addTo(mRecyclerView)
@@ -132,7 +138,7 @@ public class BasketFragment extends Fragment {
         // Get basket's id from SharedPreferences
         SharedPreferences prefs = getActivity().getSharedPreferences(MainActivity.ALTAS_PREF_NAME, FragmentActivity.MODE_PRIVATE);
         String basketUUID = prefs.getString(MainActivity.BASKET_UUID, null);
-        basketViewModel.initializeBasketProducts(basketUUID);
+        basketViewModel.initializeBasketProducts(basketUUID, queue);
 
         // Observe products list, user might remove a product from basket
         basketViewModel.getBasketProductsLive().observe(this, new Observer<ArrayList<Product>>() {
@@ -161,7 +167,7 @@ public class BasketFragment extends Fragment {
 
                 // get Product for id and removes it from basket with it
                 Product productClicked = mAdapter.getItemFromList(position);
-                basketViewModel.removeProductFromBasket(position, basketUUID, productClicked.id);
+                basketViewModel.removeProductFromBasket(position, basketUUID, productClicked.id, queue);
 
                 // Inform user that product was removed
                 Snackbar.make(getParentFragment().getView(), productClicked.name + " " + getString(R.string.product_was_removed), Snackbar.LENGTH_SHORT)
@@ -179,7 +185,7 @@ public class BasketFragment extends Fragment {
         String basketUUID = prefs.getString(MainActivity.BASKET_UUID, null);
 
         // TODO CHANGE TO "NAVIGATE TO CHECKOUT"
-        basketViewModel.purchaseProducts(basketUUID);
+        basketViewModel.purchaseProducts(basketUUID, queue);
     }
 
     /**
@@ -208,7 +214,7 @@ public class BasketFragment extends Fragment {
         SharedPreferences prefs = getActivity().getSharedPreferences(MainActivity.ALTAS_PREF_NAME, FragmentActivity.MODE_PRIVATE);
         String basketUUID = prefs.getString(MainActivity.BASKET_UUID, null);
         // Initialize products again
-        basketViewModel.initializeBasketProducts(basketUUID);
+        basketViewModel.initializeBasketProducts(basketUUID, queue);
     }
 
     /**

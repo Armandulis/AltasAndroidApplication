@@ -27,7 +27,6 @@ public class AboutFragment extends Fragment {
     private TextView textViewAboutPhone;
     private TextView textViewAboutAboutUs;
 
-    private AboutViewModel aboutViewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -35,41 +34,20 @@ public class AboutFragment extends Fragment {
         // Inflate about
         View aboutFragmentRoot = inflater.inflate(R.layout.fragment_about, container, false);
 
-        aboutViewModel = ViewModelProviders.of(this).get(AboutViewModel.class);
 
         // Set up TextView that contains email address
         this.textViewAboutEmail = aboutFragmentRoot.findViewById(R.id.text_email);
-        aboutViewModel.getAboutEmail().observe(this, new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String email) {
-                if (email != null && !email.equals("")) {
-                    textViewAboutEmail.setText(email);
-                }
-            }
-        });
+
+        textViewAboutEmail.setText(getString(R.string.about_email_address));
 
         // Set up TextView that contains phone number
         this.textViewAboutPhone = aboutFragmentRoot.findViewById(R.id.text_phone);
-        aboutViewModel.getAboutPhone().observe(this, new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String phone) {
-                if (phone != null && !phone.equals("")) {
-                    textViewAboutPhone.setText(phone);
-                }
-            }
-        });
+        textViewAboutPhone.setText(getString(R.string.about_phone_number));
 
         // Set up TextView that contains about us text
         this.textViewAboutAboutUs = aboutFragmentRoot.findViewById(R.id.text_about_us);
         this.textViewAboutAboutUs.setMovementMethod(new ScrollingMovementMethod());
-        aboutViewModel.getAboutUs().observe(this, new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String description) {
-                if (description != null && !description.equals("")) {
-                    textViewAboutAboutUs.setText(description);
-                }
-            }
-        });
+        textViewAboutAboutUs.setText(getString(R.string.about_us_text));
 
         // Get dial button and add onClickListener
         final FloatingActionButton buttonDial = aboutFragmentRoot.findViewById(R.id.button_dial_about_phone);

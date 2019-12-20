@@ -4,8 +4,10 @@ import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
+import com.android.volley.RequestQueue;
 import com.example.altas.Models.Product;
 import com.example.altas.Models.ProductStatus;
 import com.example.altas.repositories.BasketRepository;
@@ -23,14 +25,14 @@ public class BasketViewModel extends ViewModel {
     MutableLiveData<Double> totalPriceMutableLiveData;
     private BasketRepository basketRepository;
     private ProductStatusRepository statusRepository;
-    private ArrayList<Product> products;
+    private ArrayList<Product> productsList;
 
     /**
      * BasketViewModel constructor
      */
     public BasketViewModel() {
         // Initialize variables
-        products = new ArrayList<>();
+        productsList = new ArrayList<>();
         basketRepository = new BasketRepository();
         statusRepository = new ProductStatusRepository();
         productsListMutableLiveData = new MutableLiveData<>();
@@ -70,19 +72,32 @@ public class BasketViewModel extends ViewModel {
      *
      * @param basketUUID unique identifier for basket and phone
      */
-    public void initializeBasketProducts(String basketUUID) {
-        products = basketRepository.getBasket(basketUUID);
-        productsListMutableLiveData.setValue(products);
-        totalProductsMutableLiveData.postValue(products.size());
-        totalPriceMutableLiveData.postValue(getProductsTotalPrice());
+    public void initializeBasketProducts(String basketUUID, RequestQueue queue) {
+        productsList = basketRepository.getBasket(basketUUID, queue);
+        observeBasketProducts();
+    }
+
+    private void observeBasketProducts(){
+
+        basketRepository.basketProductsMutableLiveData.observeForever(new Observer<ArrayList<Product>>() {
+            @Override
+            public void onChanged(ArrayList<Product> products) {
+                productsList = products;
+                productsListMutableLiveData.setValue(products);
+                totalProductsMutableLiveData.postValue(products.size());
+                totalPriceMutableLiveData.postValue(getProductsTotalPrice(products));
+                Log.d("qwe", "def inside frag" + products.size());
+            }
+        });
     }
 
     /**
      * Calcuclates total price of products that were added to basket
      *
+     * @param products products that needs to be calculated
      * @return double
      */
-    private double getProductsTotalPrice() {
+    private double getProductsTotalPrice(ArrayList<Product> products) {
 
         double price = 0;
         // Tries to parse and add all Product's prices
@@ -105,13 +120,13 @@ public class BasketViewModel extends ViewModel {
      * @param basketId   user's basket id
      * @param productsId product's id that will be removed
      */
-    public void removeProductFromBasket(int position, String basketId, String productsId) {
+    public void removeProductFromBasket(int position, String basketId, String productsId, RequestQueue queue) {
 
-        basketRepository.removeProductFromBasket(basketId, productsId);
-        products.remove(position);
-        productsListMutableLiveData.postValue(products);
-        totalProductsMutableLiveData.postValue(products.size());
-        totalPriceMutableLiveData.postValue(getProductsTotalPrice());
+        basketRepository.removeProductFromBasket(basketId, productsId, queue);
+        productsList.remove(position);
+        productsListMutableLiveData.postValue(productsList);
+        totalProductsMutableLiveData.postValue(productsList.size());
+        totalPriceMutableLiveData.postValue(getProductsTotalPrice(productsList));
     }
 
 
@@ -120,22 +135,23 @@ public class BasketViewModel extends ViewModel {
      * Creates productStatuses for each product in basket, once purchased, remove product from basket
      * @param userId user's id that is also a basket's id
      */
-    public void purchaseProducts(String userId) {
+    public void purchaseProducts(String userId, RequestQueue queue) {
 
         // Create productStatus for each product
-        for ( Product product: products) {
+        for ( Product product: productsList) {
             ProductStatus productStatus = new ProductStatus();
             productStatus.status = "Product Purchased";
             productStatus.userId = userId;
+            productStatus.product = product;
 
             // Purchase item and remove it from basket
-            statusRepository.addProductStatuses(product.id, productStatus);
-            basketRepository.removeProductFromBasket(userId, product.id);
+            statusRepository.addProductStatuses(productStatus, queue);
+            basketRepository.removeProductFromBasket(userId, product.id, queue);
         }
 
         // Reset basket Locally
-        products = new ArrayList<>();
-        productsListMutableLiveData.postValue(products);
+        productsList = new ArrayList<>();
+        productsListMutableLiveData.postValue(productsList);
 
     }
 }

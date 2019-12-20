@@ -1,5 +1,6 @@
 package com.example.altas.ui.profile;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,8 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
 import com.example.altas.MainActivity;
 import com.example.altas.Models.Product;
 import com.example.altas.Models.ProductStatus;
@@ -27,6 +30,9 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 
+import static android.content.Context.MODE_PRIVATE;
+import static com.example.altas.MainActivity.ALTAS_PREF_NAME;
+import static com.example.altas.MainActivity.BASKET_UUID;
 import static com.example.altas.ui.shop.ShopFragment.SELECTED_PRODUCT_KEY;
 
 /**
@@ -41,6 +47,8 @@ public class ProfileFragment extends Fragment {
     private RecyclerView recyclerViewProductStatus;
 
     private OrderListAdapter mAdapter;
+    private String basketUUID;
+    private RequestQueue queue;
 
     private LinearLayoutManager mLayoutManager;
 
@@ -56,7 +64,15 @@ public class ProfileFragment extends Fragment {
         textViewNoPurchases = profileFragmentRoot.findViewById(R.id.text_view_no_purchases);
         recyclerViewProductStatus = profileFragmentRoot.findViewById(R.id.profile_status_recycler_view);
 
-        getProductStatuses();
+        // Get basketId
+        SharedPreferences prefs = getActivity().getSharedPreferences(ALTAS_PREF_NAME, MODE_PRIVATE);
+        basketUUID = prefs.getString(BASKET_UUID, null);
+
+        // Instantiate the RequestQueue.
+        queue = Volley.newRequestQueue(getContext());
+
+        // Initialize suggested productStatuses
+        mViewModel.getAllUserProductStatus(basketUUID, queue);
 
         // Use a linear layout manager on RecyclerView
         mLayoutManager = new LinearLayoutManager(getContext());
@@ -64,20 +80,7 @@ public class ProfileFragment extends Fragment {
         recyclerViewProductStatus.setHasFixedSize(true);
 
         // Observe productStatus list changes
-        mViewModel.productStatusListMutableLiveData.observe(this, new Observer<ArrayList<ProductStatus>>() {
-            @Override
-            public void onChanged(ArrayList<ProductStatus> productStatuses) {
-                // Check if there are any productStatus in the list
-                if (productStatuses.size() == 0) {
-                    textViewNoPurchases.setVisibility(View.VISIBLE);
-
-                } else {
-                    textViewNoPurchases.setVisibility(View.GONE);
-                }
-
-                addAdapterToStatusView(productStatuses);
-            }
-        });
+        mViewModel.productStatusListMutableLiveData.observe(this, getObserver());
 
         ItemClickSupport.addTo(recyclerViewProductStatus)
                 .setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
@@ -101,12 +104,21 @@ public class ProfileFragment extends Fragment {
         return profileFragmentRoot;
     }
 
-    /**
-     * Gets user's id and calls ViewModel to get wanted data
-     */
-    private void getProductStatuses() {
+    private Observer<ArrayList<ProductStatus>> getObserver() {
+        return new Observer<ArrayList<ProductStatus>>() {
+            @Override
+            public void onChanged(ArrayList<ProductStatus> productStatuses) {
+                // Check if there are any productStatus in the list
+                if (productStatuses.size() == 0) {
+                    textViewNoPurchases.setVisibility(View.VISIBLE);
 
-        mViewModel.getAllUserProductStatus("");
+                } else {
+                    textViewNoPurchases.setVisibility(View.GONE);
+                }
+
+                addAdapterToStatusView(productStatuses);
+            }
+        };
     }
 
     /**
@@ -144,7 +156,7 @@ public class ProfileFragment extends Fragment {
         productStatus.status = getString(R.string.confirmed_delivery);
 
         // If status is not "confirmed delivery" user should only be able to confirm it
-        mViewModel.confirmDelivered(productStatus, position);
+        mViewModel.confirmDelivered(productStatus, position, queue);
 
         // Inform user that user confirmed delivery
         Snackbar.make(getParentFragment().getView(),
@@ -160,7 +172,7 @@ public class ProfileFragment extends Fragment {
     private void handleProductStatusRemoval(ProductStatus productStatus) {
         // If status is confirmed delivery by user, we can only remove productStatus
         // from the list
-        mViewModel.removeProductStatus(productStatus);
+        mViewModel.removeProductStatus(productStatus, queue);
 
         // Inform user that productStatus was removed
         Snackbar.make(getParentFragment().getView(),

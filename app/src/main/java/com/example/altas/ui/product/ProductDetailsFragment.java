@@ -13,6 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
 import com.example.altas.MainActivity;
 import com.example.altas.Models.Product;
 import com.example.altas.R;
@@ -42,6 +44,8 @@ public class ProductDetailsFragment extends Fragment {
     private BasketRepository basketRepository;
 
 
+    private RequestQueue queue;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
@@ -49,7 +53,7 @@ public class ProductDetailsFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_product_details, container, false);
 
         // Initialize class variables
-        this.product = (Product) getArguments().getSerializable(ShopFragment.SELECTED_PRODUCT_KEY);
+        product = (Product) getArguments().getSerializable(ShopFragment.SELECTED_PRODUCT_KEY);
         basketRepository = new BasketRepository();
         textViewProductDescription = root.findViewById(R.id.text_view_product_details_description);
         textViewProductDescription.setMovementMethod(new ScrollingMovementMethod());
@@ -65,6 +69,10 @@ public class ProductDetailsFragment extends Fragment {
                 addToCart();
             }
         });
+
+
+        // Instantiate the RequestQueue.
+        queue = Volley.newRequestQueue(getContext());
 
         // Set up Action bar
         ActionBar actionBar = ((MainActivity) getActivity()).getSupportActionBar();
@@ -86,7 +94,7 @@ public class ProductDetailsFragment extends Fragment {
         // Get basket's id
         SharedPreferences prefs = getActivity().getSharedPreferences(ALTAS_PREF_NAME, MODE_PRIVATE);
         final String basketUUID = prefs.getString(BASKET_UUID, null);
-        basketRepository.addProductToBasket(basketUUID, product.id);
+        basketRepository.addProductToBasket(basketUUID, product.id, queue);
 
         // Inform user that product was added
         Snackbar.make(getParentFragment().getView(), product.name + " " + getString(R.string.product_was_added), Snackbar.LENGTH_SHORT)

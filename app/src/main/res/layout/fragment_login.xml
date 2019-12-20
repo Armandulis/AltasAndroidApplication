@@ -70,6 +70,15 @@
         app:layout_constraintEnd_toEndOf="@+id/edit_text_login_password"
         app:layout_constraintTop_toBottomOf="@+id/edit_text_login_password" />
 
+    <Button
+        android:id="@+id/button_login_show_purchases"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:text="@string/login_show_puchases"
+        app:backgroundTint="@color/lightPrimary"
+        app:layout_constraintStart_toStartOf="@+id/edit_text_login_password"
+        app:layout_constraintTop_toTopOf="@+id/button_login_login" />
+
     <TextView
         android:id="@+id/textView14"
         style="@style/TextAppearance.MaterialComponents.Headline6"

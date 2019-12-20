@@ -1,8 +1,10 @@
 package com.example.altas.ui.profile;
 
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
+import com.android.volley.RequestQueue;
 import com.example.altas.Models.ProductStatus;
 import com.example.altas.repositories.AuthenticationRepository;
 import com.example.altas.repositories.ProductStatusRepository;
@@ -36,9 +38,15 @@ public class ProfileViewModel extends ViewModel {
      *
      * @param userId user who's productStatuses we want to get
      */
-    public void getAllUserProductStatus(String userId) {
-        productStatusList = statusRepo.getAllProducts(userId);
-        productStatusListMutableLiveData.setValue(productStatusList);
+    public void getAllUserProductStatus(String userId, RequestQueue queue) {
+        productStatusList = statusRepo.getAllProducts(userId, queue);
+        statusRepo.productStatusListMutableLiveData.observeForever(new Observer<ArrayList<ProductStatus>>() {
+            @Override
+            public void onChanged(ArrayList<ProductStatus> productStatuses) {
+                productStatusList = productStatuses;
+                productStatusListMutableLiveData.setValue(productStatusList);
+            }
+        });
     }
 
     /**
@@ -46,14 +54,14 @@ public class ProfileViewModel extends ViewModel {
      *
      * @param productStatus productStatus that needs to be removed
      */
-    public void removeProductStatus(ProductStatus productStatus) {
+    public void removeProductStatus(ProductStatus productStatus, RequestQueue queue) {
 
         // Remove productStatus locally
         productStatusList.remove(productStatus);
         productStatusListMutableLiveData.setValue(productStatusList);
 
         // Call repo to remove it from database
-        statusRepo.removeProductStatus(productStatus.id);
+        statusRepo.removeProductStatus(productStatus.id, queue);
     }
 
 
@@ -63,13 +71,13 @@ public class ProfileViewModel extends ViewModel {
      * @param productStatus productStatus that will be updated
      * @param position      of productStatus that needs to be updated
      */
-    public void confirmDelivered(ProductStatus productStatus, int position) {
+    public void confirmDelivered(ProductStatus productStatus, int position, RequestQueue queue) {
 
         // Update productStatus locally
         productStatusList.set(position, productStatus);
         productStatusListMutableLiveData.setValue(productStatusList);
 
         // Call repo to update it from database
-        statusRepo.updateProductStatus(productStatus);
+        statusRepo.updateProductStatus(productStatus, queue);
     }
 }
