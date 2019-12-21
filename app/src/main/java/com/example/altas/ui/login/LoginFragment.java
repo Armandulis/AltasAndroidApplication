@@ -1,6 +1,7 @@
 package com.example.altas.ui.login;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,11 +12,16 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
 import com.example.altas.MainActivity;
+import com.example.altas.Models.LoginInput;
+import com.example.altas.Models.User;
 import com.example.altas.R;
 
 /**
@@ -31,8 +37,17 @@ public class LoginFragment extends Fragment {
 
     private LoginViewModel mViewModel;
 
+    private RequestQueue queue;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+
+        User user = User.getInstance();
+        if (user.email != null && !user.email.equals("")){
+            // Navigate user to profile fragment
+            NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
+            navController.navigate(R.id.navigation_profile);
+        }
 
         // Initialize variables
         View loginFragmentRoot = inflater.inflate(R.layout.fragment_login, container, false);
@@ -46,6 +61,10 @@ public class LoginFragment extends Fragment {
         Button buttonLogin = loginFragmentRoot.findViewById(R.id.button_login_login);
         TextView textRegister = loginFragmentRoot.findViewById(R.id.text_view_register_here);
         buttonShowPurchases = loginFragmentRoot.findViewById(R.id.button_login_show_purchases);
+
+
+        // Instantiate the RequestQueue.
+        queue = Volley.newRequestQueue(getContext());
 
         // Set up Action bar
         ActionBar actionBar = ((MainActivity) getActivity()).getSupportActionBar();
@@ -128,8 +147,12 @@ public class LoginFragment extends Fragment {
                     return;
                 }
 
+                LoginInput loginInput = new LoginInput();
+                loginInput.email = userEmail;
+                loginInput.password = userPassword;
+
                 // Try to log in user
-                loginUser(userEmail, userPassword);
+                loginUser(loginInput);
             }
         };
     }
@@ -137,22 +160,26 @@ public class LoginFragment extends Fragment {
     /**
      * Tries to log in user, if it fails, inform user
      *
-     * @param userEmail    user's email
-     * @param userPassword user's password
+     * @param loginInput user's email and password
      */
-    private void loginUser(String userEmail, String userPassword) {
+    private void loginUser(LoginInput loginInput) {
 
         // Log in user
-        boolean userSignedIn = mViewModel.loginUser(userEmail, userPassword);
+        boolean userSignedIn = mViewModel.loginUser(loginInput, queue);
 
-        // Check if user was logged in
-        if (userSignedIn) {
-            // Navigate user to profile fragment
-            NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
-            navController.navigate(R.id.navigation_profile);
-        }
+        mViewModel.userMutableLiveData.observe(this, new Observer<User>() {
+            @Override
+            public void onChanged(User user) {
+                // Check if user was logged in
+                if (user.email != null && !user.email.equals("")) {
+                    // Navigate user to profile fragment
+                    NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
+                    navController.navigate(R.id.navigation_profile);
+                }
+                // Show Error message
+                textViewError.setText(getString(R.string.login_failed_login));
+            }
+        });
 
-        // Show Error message
-        textViewError.setText(getString(R.string.login_failed_login));
     }
 }

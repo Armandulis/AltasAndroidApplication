@@ -11,11 +11,16 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
 import com.example.altas.MainActivity;
+import com.example.altas.Models.LoginInput;
+import com.example.altas.Models.User;
 import com.example.altas.R;
 
 /**
@@ -31,6 +36,8 @@ public class RegisterFragment extends Fragment {
     private EditText editTextEmail;
     private TextView textViewError;
 
+    private RequestQueue queue;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
@@ -42,6 +49,9 @@ public class RegisterFragment extends Fragment {
         editTextPasswordRepeat = registerFragmentRoot.findViewById(R.id.edit_text_register_password_rep);
         editTextEmail = registerFragmentRoot.findViewById(R.id.edit_text_register_email);
         textViewError = registerFragmentRoot.findViewById(R.id.text_view_register_error);
+
+        // Instantiate the RequestQueue.
+        queue = Volley.newRequestQueue(getContext());
 
         // Set up Action bar
         ActionBar actionBar = ((MainActivity) getActivity()).getSupportActionBar();
@@ -72,7 +82,12 @@ public class RegisterFragment extends Fragment {
 
                 // Validate user's and register user
                 if (validateInput(usersEmail, usersPassword, usersPasswordRepeat)) {
-                    registerUser(usersEmail, usersPassword);
+
+                    LoginInput loginInput = new LoginInput();
+                    loginInput.email = usersEmail;
+                    loginInput.password = usersPassword;
+
+                    registerUser(loginInput);
                 }
             }
         };
@@ -81,24 +96,29 @@ public class RegisterFragment extends Fragment {
     /**
      * Registers user and navigates user to profile fragment if it was successful
      *
-     * @param usersEmail    user's email
-     * @param usersPassword user's password
+     * @param loginInput    user's email and password
      */
-    private void registerUser(String usersEmail, String usersPassword) {
+    private void registerUser(LoginInput loginInput) {
 
         // Register user
-        boolean userRegistered = mViewModel.registerUser(usersEmail, usersPassword);
+        boolean userRegistered = mViewModel.registerUser(loginInput, queue);
 
+        mViewModel.userMutableLiveData.observe(this, new Observer<User>() {
+            @Override
+            public void onChanged(User user) {
+                if (user.email != null && !user.email.equals("")) {
+
+                    // Navigate user to profile
+                    NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
+                    navController.navigate(R.id.navigation_profile);
+                }
+
+                // Inform user about failed registration
+                textViewError.setText(getString(R.string.register_failed_register));
+            }
+        });
         // Check if registration was successful
-        if (userRegistered) {
 
-            // Navigate user to profile
-            NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
-            navController.navigate(R.id.navigation_profile);
-        }
-
-        // Inform user about failed registration
-        textViewError.setText(getString(R.string.register_failed_register));
     }
 
     /**

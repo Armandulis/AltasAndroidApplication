@@ -29,6 +29,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.example.altas.Models.Product;
+import com.example.altas.Models.User;
 import com.example.altas.R;
 import com.example.altas.repositories.BasketRepository;
 import com.example.altas.ui.list.adepters.IRecyclerViewSupport.IRecyclerViewButtonClickListener;
@@ -67,6 +68,7 @@ public class ShopFragment extends Fragment {
     private boolean isSearchBarHidden = true;
 
     private BasketRepository basketRepository;
+    private String userUUID;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -193,17 +195,25 @@ public class ShopFragment extends Fragment {
      * @param products products from the database
      **/
     private void addAdapterToProductsView(ArrayList<Product> products) {
-        // Get basket's id
-        SharedPreferences prefs = getActivity().getSharedPreferences(ALTAS_PREF_NAME, MODE_PRIVATE);
-        final String basketUUID = prefs.getString(BASKET_UUID, null);
 
+        User user = User.getInstance();
+
+        if (user.email != null && !user.email.equals("")){
+           userUUID = user.email;
+        }
+        else{
+            // Get basket's id
+            SharedPreferences prefs = getActivity().getSharedPreferences(ALTAS_PREF_NAME, MODE_PRIVATE);
+            userUUID = prefs.getString(BASKET_UUID, null);
+
+        }
         // Specify an adapter and pass in our data model list
         mAdapter = new ShopListAdapter(products, getContext(), new IRecyclerViewButtonClickListener() {
             @Override
             public void onClick(View view, int position) {
                 // Handle on "add to basket" button clicked action
                 Product product = mAdapter.getItemFromList(position);
-                basketRepository.addProductToBasket(basketUUID, product.id, queue);
+                basketRepository.addProductToBasket(userUUID, product.id, queue);
                 // Inform user that product was added
                 Snackbar.make(getParentFragment().getView(), product.name + " " + getString(R.string.product_was_added), Snackbar.LENGTH_SHORT)
                         .show();

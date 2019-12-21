@@ -17,6 +17,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.example.altas.MainActivity;
 import com.example.altas.Models.Product;
+import com.example.altas.Models.User;
 import com.example.altas.R;
 import com.example.altas.repositories.BasketRepository;
 import com.example.altas.ui.shop.ShopFragment;
@@ -93,7 +94,12 @@ public class ProductDetailsFragment extends Fragment {
     private void addToCart() {
         // Get basket's id
         SharedPreferences prefs = getActivity().getSharedPreferences(ALTAS_PREF_NAME, MODE_PRIVATE);
-        final String basketUUID = prefs.getString(BASKET_UUID, null);
+        String basketUUID = prefs.getString(BASKET_UUID, null);
+
+        User user = User.getInstance();
+        if (user.email != null && !user.email.equals("")){
+            basketUUID = user.email;
+        }
         basketRepository.addProductToBasket(basketUUID, product.id, queue);
 
         // Inform user that product was added

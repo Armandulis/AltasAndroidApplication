@@ -2,6 +2,7 @@ package com.example.altas.ui.profile;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.altas.MainActivity;
 import com.example.altas.Models.Product;
 import com.example.altas.Models.ProductStatus;
+import com.example.altas.Models.User;
 import com.example.altas.R;
 import com.example.altas.ui.list.adepters.IRecyclerViewSupport.IRecyclerViewButtonClickListener;
 import com.example.altas.ui.list.adepters.ItemClickSupport;
@@ -64,15 +66,23 @@ public class ProfileFragment extends Fragment {
         textViewNoPurchases = profileFragmentRoot.findViewById(R.id.text_view_no_purchases);
         recyclerViewProductStatus = profileFragmentRoot.findViewById(R.id.profile_status_recycler_view);
 
-        // Get basketId
-        SharedPreferences prefs = getActivity().getSharedPreferences(ALTAS_PREF_NAME, MODE_PRIVATE);
-        basketUUID = prefs.getString(BASKET_UUID, null);
-
         // Instantiate the RequestQueue.
         queue = Volley.newRequestQueue(getContext());
 
-        // Initialize suggested productStatuses
+        User user = User.getInstance();
+        if (user.email != null && !user.email.equals("")){
+            basketUUID = user.email;
+        }
+        else {
+            // Get basketId
+            SharedPreferences prefs = getActivity().getSharedPreferences(ALTAS_PREF_NAME, MODE_PRIVATE);
+            basketUUID = prefs.getString(BASKET_UUID, null);
+        }
+
+        // Initialize suggested productStatuses with email
         mViewModel.getAllUserProductStatus(basketUUID, queue);
+
+        Log.d("UUID", "onClick: " + basketUUID);
 
         // Use a linear layout manager on RecyclerView
         mLayoutManager = new LinearLayoutManager(getContext());

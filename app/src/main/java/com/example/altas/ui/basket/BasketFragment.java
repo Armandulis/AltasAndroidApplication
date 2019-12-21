@@ -23,6 +23,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.example.altas.MainActivity;
 import com.example.altas.Models.Product;
+import com.example.altas.Models.User;
 import com.example.altas.R;
 import com.example.altas.ui.list.adepters.IRecyclerViewSupport.IRecyclerViewButtonClickListener;
 import com.example.altas.ui.list.adepters.ItemClickSupport;
@@ -48,6 +49,7 @@ public class BasketFragment extends Fragment {
     private ShopListAdapter mAdapter;
     private RecyclerView mRecyclerView;
     private ConstraintLayout basketLayoutInfo;
+    private String basketUID;
 
     private RequestQueue queue;
 
@@ -66,6 +68,15 @@ public class BasketFragment extends Fragment {
         // Initialize ViewModel
         basketViewModel = ViewModelProviders.of(this).get(BasketViewModel.class);
 
+        User user = User.getInstance();
+        if (user.email != null && !user.email.equals("")){
+            basketUID = user.email;
+        }
+        else {
+            // Get basket's id from SharedPreferences
+            SharedPreferences prefs = getActivity().getSharedPreferences(MainActivity.ALTAS_PREF_NAME, FragmentActivity.MODE_PRIVATE);
+            basketUID = prefs.getString(MainActivity.BASKET_UUID, null);
+        }
         // Initialize RecyclerView that will hold list of products
         mRecyclerView = basketFragmentRoot.findViewById(R.id.basket_products_recycler_view);
         mRecyclerView.setHasFixedSize(true);
@@ -135,10 +146,7 @@ public class BasketFragment extends Fragment {
      * Gets basket's products and put them in adapter
      */
     private void initializeBasketProducts() {
-        // Get basket's id from SharedPreferences
-        SharedPreferences prefs = getActivity().getSharedPreferences(MainActivity.ALTAS_PREF_NAME, FragmentActivity.MODE_PRIVATE);
-        String basketUUID = prefs.getString(MainActivity.BASKET_UUID, null);
-        basketViewModel.initializeBasketProducts(basketUUID, queue);
+        basketViewModel.initializeBasketProducts(basketUID, queue);
 
         // Observe products list, user might remove a product from basket
         basketViewModel.getBasketProductsLive().observe(this, new Observer<ArrayList<Product>>() {
@@ -161,13 +169,9 @@ public class BasketFragment extends Fragment {
         return new IRecyclerViewButtonClickListener() {
             @Override
             public void onClick(View view, int position) {
-                // Get basket's id from SharedPreferences
-                SharedPreferences prefs = getActivity().getSharedPreferences(MainActivity.ALTAS_PREF_NAME, FragmentActivity.MODE_PRIVATE);
-                String basketUUID = prefs.getString(MainActivity.BASKET_UUID, null);
-
                 // get Product for id and removes it from basket with it
                 Product productClicked = mAdapter.getItemFromList(position);
-                basketViewModel.removeProductFromBasket(position, basketUUID, productClicked.id, queue);
+                basketViewModel.removeProductFromBasket(position, basketUID, productClicked.id, queue);
 
                 // Inform user that product was removed
                 Snackbar.make(getParentFragment().getView(), productClicked.name + " " + getString(R.string.product_was_removed), Snackbar.LENGTH_SHORT)
@@ -180,12 +184,8 @@ public class BasketFragment extends Fragment {
      * Navigates user to checkout after user clicked proceed button
      */
     private void handleButtonProceed() {
-        // Get basket's id from SharedPreferences
-        SharedPreferences prefs = getActivity().getSharedPreferences(MainActivity.ALTAS_PREF_NAME, FragmentActivity.MODE_PRIVATE);
-        String basketUUID = prefs.getString(MainActivity.BASKET_UUID, null);
-
         // TODO CHANGE TO "NAVIGATE TO CHECKOUT"
-        basketViewModel.purchaseProducts(basketUUID, queue);
+        basketViewModel.purchaseProducts(basketUID, queue);
     }
 
     /**
@@ -210,11 +210,8 @@ public class BasketFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        // Get basket's id from SharedPreferences
-        SharedPreferences prefs = getActivity().getSharedPreferences(MainActivity.ALTAS_PREF_NAME, FragmentActivity.MODE_PRIVATE);
-        String basketUUID = prefs.getString(MainActivity.BASKET_UUID, null);
         // Initialize products again
-        basketViewModel.initializeBasketProducts(basketUUID, queue);
+        basketViewModel.initializeBasketProducts(basketUID, queue);
     }
 
     /**

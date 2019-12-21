@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.example.altas.Models.Product;
+import com.example.altas.Models.User;
 import com.example.altas.R;
 import com.example.altas.ui.list.adepters.IRecyclerViewSupport.IRecyclerViewButtonClickListener;
 import com.example.altas.ui.list.adepters.ItemClickSupport;
@@ -120,7 +121,11 @@ public class HomeFragment extends Fragment {
                 // Get basket's id
                 SharedPreferences prefs = getActivity().getSharedPreferences(ALTAS_PREF_NAME, MODE_PRIVATE);
                 String basketUUID = prefs.getString(BASKET_UUID, null);
-
+                User user = User.getInstance();
+                if (user.email != null && !user.email.equals("")){
+                    basketUUID = user.email;
+                    Log.d("UUID", "onClick: " + user.email);
+                }
                 // Get Product's id
                 Product product = mAdapter.getItemFromList(position);
 
