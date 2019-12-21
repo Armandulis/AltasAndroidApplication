@@ -1,6 +1,7 @@
 package com.example.altas.ui.product;
 
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import androidx.fragment.app.Fragment;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
 import com.example.altas.MainActivity;
 import com.example.altas.Models.Product;
 import com.example.altas.Models.User;
@@ -39,7 +41,7 @@ public class ProductDetailsFragment extends Fragment {
     private TextView textViewProductPrice;
     private TextView textViewProductBrand;
     private TextView textViewProductAmount;
-    private ImageView textViewProductImage;
+    private ImageView imageViewProductImage;
 
     private FloatingActionButton buttonAddToCart;
     private BasketRepository basketRepository;
@@ -62,7 +64,7 @@ public class ProductDetailsFragment extends Fragment {
         textViewProductPrice = root.findViewById(R.id.text_view_product_details_price);
         textViewProductBrand = root.findViewById(R.id.text_view_product_details_brand);
         textViewProductAmount = root.findViewById(R.id.text_view_product_details_amount);
-        textViewProductImage = root.findViewById(R.id.image_view_details_image);
+        imageViewProductImage = root.findViewById(R.id.image_view_details_image);
         buttonAddToCart = root.findViewById(R.id.button_details_add_to_cart);
         buttonAddToCart.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,5 +118,10 @@ public class ProductDetailsFragment extends Fragment {
         textViewProductPrice.setText(product.price);
         textViewProductBrand.setText(product.brand);
         textViewProductAmount.setText(product.amount);
+        if (product.pictureUrl != null && !product.pictureUrl.equals("")){
+            Glide.with(getActivity())
+                    .load(Uri.parse(product.pictureUrl))
+                    .into(imageViewProductImage);
+        }
     }
 }

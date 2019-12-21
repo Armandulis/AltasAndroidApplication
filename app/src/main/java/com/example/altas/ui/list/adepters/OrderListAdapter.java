@@ -1,6 +1,7 @@
 package com.example.altas.ui.list.adepters;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.altas.Models.ProductStatus;
 import com.example.altas.R;
 import com.example.altas.ui.list.adepters.IRecyclerViewSupport.IRecyclerViewButtonClickListener;
@@ -60,7 +62,11 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.Orde
          * @param context Context
          */
         void bindData(final ProductStatus productStatus, Context context) {
-            cardImageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.logo_lt));
+            if (productStatus.product.pictureUrl != null && !productStatus.product.pictureUrl.equals("")){
+                Glide.with(context)
+                        .load(Uri.parse(productStatus.product.pictureUrl))
+                        .into(cardImageView);
+            }
             titleTextView.setText(productStatus.product.name);
             dateTextView.setText(productStatus.purchaseDate);
             buttonStatus.setText(productStatus.status);

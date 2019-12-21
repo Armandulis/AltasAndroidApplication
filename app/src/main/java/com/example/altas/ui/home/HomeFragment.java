@@ -132,6 +132,8 @@ public class HomeFragment extends Fragment {
                 // Add Product to basket
                 mViewModel.addProductToBasket(basketUUID, product.id, queue);
 
+
+
                 // Inform user that product was added
                 Snackbar.make(getParentFragment().getView(), product.name + " " + getString(R.string.product_was_added), Snackbar.LENGTH_SHORT)
                         .show();
