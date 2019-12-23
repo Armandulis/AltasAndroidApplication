@@ -20,7 +20,7 @@ import java.io.UnsupportedEncodingException;
  */
 public class AuthenticationRepository extends BaseVolleyRepository {
 
-    public static final String API_PRODUCTS_PATH = "http://atlastrestapi.azurewebsites.net/api/auth";
+    public static final String API_PRODUCTS_PATH = "http://altas.gear.host/api/auth";
 
     public MutableLiveData<User> userMutableLiveData;
 

@@ -20,7 +20,7 @@ import java.util.ArrayList;
  */
 public class ProductStatusRepository extends BaseVolleyRepository {
 
-    public static final String API_PRODUCTS_PATH = "http://atlastrestapi.azurewebsites.net/api/productstatus";
+    public static final String API_PRODUCTS_PATH = "http://altas.gear.host/api/productstatus";
 
     public MutableLiveData<ArrayList<ProductStatus>> productStatusListMutableLiveData;
 

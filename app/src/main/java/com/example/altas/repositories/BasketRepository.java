@@ -14,7 +14,7 @@ import java.util.ArrayList;
 
 public class BasketRepository extends BaseVolleyRepository {
 
-    static final String API_PRODUCTS_PATH = "http://atlastrestapi.azurewebsites.net/api/basket";
+    static final String API_PRODUCTS_PATH = "http://altas.gear.host/api/basket";
     public MutableLiveData<ArrayList<Product>> basketProductsMutableLiveData;
 
     MutableLiveData<Boolean> basketAddMutableLiveData;
