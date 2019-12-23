@@ -2,6 +2,7 @@ package com.example.altas.ui.basket;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,9 +66,15 @@ public class BasketFragment extends Fragment {
         textViewEmpty = basketFragmentRoot.findViewById(R.id.text_view_basket_empty);
         basketLayoutInfo = basketFragmentRoot.findViewById(R.id.layout_basket_info);
 
+        // Hide layout at the beginning
+        hideLayoutIfNoProductsInBasket(0);
+        textViewEmpty.setText(getString(R.string.loading));
+
+
         // Initialize ViewModel
         basketViewModel = ViewModelProviders.of(this).get(BasketViewModel.class);
 
+        // Check if user is signed in
         User user = User.getInstance();
         if (user.email != null && !user.email.equals("")){
             basketUID = user.email;
@@ -77,6 +84,7 @@ public class BasketFragment extends Fragment {
             SharedPreferences prefs = getActivity().getSharedPreferences(MainActivity.ALTAS_PREF_NAME, FragmentActivity.MODE_PRIVATE);
             basketUID = prefs.getString(MainActivity.BASKET_UUID, null);
         }
+
         // Initialize RecyclerView that will hold list of products
         mRecyclerView = basketFragmentRoot.findViewById(R.id.basket_products_recycler_view);
         mRecyclerView.setHasFixedSize(true);
@@ -146,6 +154,8 @@ public class BasketFragment extends Fragment {
      * Gets basket's products and put them in adapter
      */
     private void initializeBasketProducts() {
+
+        // Request for products
         basketViewModel.initializeBasketProducts(basketUID, queue);
 
         // Observe products list, user might remove a product from basket
@@ -155,9 +165,11 @@ public class BasketFragment extends Fragment {
                 // Specify an adapter and pass in our data model which is products from basket
                 mAdapter = new ShopListAdapter(products, getContext(), handleRemoveButtonClicked(), true);
                 mRecyclerView.setAdapter(mAdapter);
-                hideLayoutIfNoProductsInBasket(products);
+                hideLayoutIfNoProductsInBasket(products.size());
             }
         });
+
+
     }
 
     /**
@@ -217,17 +229,19 @@ public class BasketFragment extends Fragment {
     /**
      * Hides layout and shows message to the user if list size is 0
      *
-     * @param products list of products
+     * @param amount amount of products in the list
      */
-    private void hideLayoutIfNoProductsInBasket(ArrayList<Product> products) {
-        if (products.size() == 0) {
-            // Hide product's list layout
-            textViewEmpty.setVisibility(View.VISIBLE);
-            basketLayoutInfo.setVisibility(View.GONE);
-        } else {
+    private void hideLayoutIfNoProductsInBasket(int amount) {
+        if (amount != 0) {
             // Show Basket's info
             textViewEmpty.setVisibility(View.GONE);
             basketLayoutInfo.setVisibility(View.VISIBLE);
+        } else{
+            // Hide product's list layout
+            textViewEmpty.setVisibility(View.VISIBLE);
+            textViewEmpty.setText(getString(R.string.basket_empty));
+            basketLayoutInfo.setVisibility(View.GONE);
         }
+
     }
 }

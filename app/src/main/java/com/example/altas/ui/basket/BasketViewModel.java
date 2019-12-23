@@ -1,7 +1,5 @@
 package com.example.altas.ui.basket;
 
-import android.util.Log;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
@@ -20,9 +18,9 @@ import java.util.ArrayList;
  */
 public class BasketViewModel extends ViewModel {
 
-    MutableLiveData<ArrayList<Product>> productsListMutableLiveData;
-    MutableLiveData<Integer> totalProductsMutableLiveData;
-    MutableLiveData<Double> totalPriceMutableLiveData;
+    private MutableLiveData<ArrayList<Product>> productsListMutableLiveData;
+    private MutableLiveData<Integer> totalProductsMutableLiveData;
+    private MutableLiveData<Double> totalPriceMutableLiveData;
     private BasketRepository basketRepository;
     private ProductStatusRepository statusRepository;
     private ArrayList<Product> productsList;
@@ -45,7 +43,7 @@ public class BasketViewModel extends ViewModel {
      *
      * @return LiveData of ArrayList<Product> that were added to basket
      */
-    public LiveData<ArrayList<Product>> getBasketProductsLive() {
+    LiveData<ArrayList<Product>> getBasketProductsLive() {
         return productsListMutableLiveData;
     }
 
@@ -54,7 +52,7 @@ public class BasketViewModel extends ViewModel {
      *
      * @return Live data of amount of products in it
      */
-    public LiveData<Integer> getProductCountProductsLive() {
+    LiveData<Integer> getProductCountProductsLive() {
         return totalProductsMutableLiveData;
     }
 
@@ -72,12 +70,12 @@ public class BasketViewModel extends ViewModel {
      *
      * @param basketUUID unique identifier for basket and phone
      */
-    public void initializeBasketProducts(String basketUUID, RequestQueue queue) {
-        productsList = basketRepository.getBasket(basketUUID, queue);
+    void initializeBasketProducts(String basketUUID, RequestQueue queue) {
+        basketRepository.getBasket(basketUUID, queue);
         observeBasketProducts();
     }
 
-    private void observeBasketProducts(){
+    private void observeBasketProducts() {
 
         basketRepository.basketProductsMutableLiveData.observeForever(new Observer<ArrayList<Product>>() {
             @Override
@@ -86,13 +84,12 @@ public class BasketViewModel extends ViewModel {
                 productsListMutableLiveData.setValue(products);
                 totalProductsMutableLiveData.postValue(products.size());
                 totalPriceMutableLiveData.postValue(getProductsTotalPrice(products));
-                Log.d("qwe", "def inside frag" + products.size());
             }
         });
     }
 
     /**
-     * Calcuclates total price of products that were added to basket
+     * Calculates total price of products that were added to basket
      *
      * @param products products that needs to be calculated
      * @return double
@@ -104,7 +101,6 @@ public class BasketViewModel extends ViewModel {
         for (Product product : products) {
             try {
                 price = price + Double.parseDouble(product.price);
-                Log.d("PRICE", "" + price);
             } catch (NumberFormatException nfe) {
                 // Handle parse error.
             }
@@ -120,9 +116,12 @@ public class BasketViewModel extends ViewModel {
      * @param basketId   user's basket id
      * @param productsId product's id that will be removed
      */
-    public void removeProductFromBasket(int position, String basketId, String productsId, RequestQueue queue) {
+    void removeProductFromBasket(int position, String basketId, String productsId, RequestQueue queue) {
 
+        // Request to remove product from basket
         basketRepository.removeProductFromBasket(basketId, productsId, queue);
+
+        // Remove product locally
         productsList.remove(position);
         productsListMutableLiveData.postValue(productsList);
         totalProductsMutableLiveData.postValue(productsList.size());
@@ -131,14 +130,14 @@ public class BasketViewModel extends ViewModel {
 
 
     /**
-     *
      * Creates productStatuses for each product in basket, once purchased, remove product from basket
+     *
      * @param userId user's id that is also a basket's id
      */
-    public void purchaseProducts(String userId, RequestQueue queue) {
+    void purchaseProducts(String userId, RequestQueue queue) {
 
         // Create productStatus for each product
-        for ( Product product: productsList) {
+        for (Product product : productsList) {
             ProductStatus productStatus = new ProductStatus();
             productStatus.status = "Product Purchased";
             productStatus.userId = userId;

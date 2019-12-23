@@ -1,7 +1,6 @@
 package com.example.altas.ui.login;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,7 +42,7 @@ public class LoginFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
 
         User user = User.getInstance();
-        if (user.email != null && !user.email.equals("")){
+        if (user.email != null && !user.email.equals("")) {
             // Navigate user to profile fragment
             NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
             navController.navigate(R.id.navigation_profile);
@@ -112,9 +111,6 @@ public class LoginFragment extends Fragment {
      * Navigates user to RegisterFragment
      */
     private void navigateToRegisterFragment() {
-        //Bundle bundle = new Bundle();
-        //bundle.putSerializable(SELECTED_PRODUCT_KEY, product);
-
         // Navigate user to register fragment
         NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
         navController.navigate(R.id.navigation_register);
@@ -165,8 +161,9 @@ public class LoginFragment extends Fragment {
     private void loginUser(LoginInput loginInput) {
 
         // Log in user
-        boolean userSignedIn = mViewModel.loginUser(loginInput, queue);
+        mViewModel.loginUser(loginInput, queue);
 
+        // Observe for login response
         mViewModel.userMutableLiveData.observe(this, new Observer<User>() {
             @Override
             public void onChanged(User user) {

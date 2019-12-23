@@ -8,92 +8,108 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.example.altas.Models.Product;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
+import com.example.altas.repositories.BaseRepositories.BaseVolleyRepository;
 
 import java.util.ArrayList;
 
-public class BasketRepository {
+public class BasketRepository extends BaseVolleyRepository {
 
-    public static final String API_PRODUCTS_PATH = "http://altas.gear.host/api/basket";
-
+    static final String API_PRODUCTS_PATH = "http://atlastrestapi.azurewebsites.net/api/basket";
     public MutableLiveData<ArrayList<Product>> basketProductsMutableLiveData;
 
-    public MutableLiveData<Boolean> basketAddMutableLiveData;
+    MutableLiveData<Boolean> basketAddMutableLiveData;
+    MutableLiveData<Boolean> basketRemoveMutableLiveData;
 
-    public MutableLiveData<Boolean> basketRemoveMutableLiveData;
 
-
-    private ArrayList<Product> products;
-
-    public ArrayList<Product> getBasket(String basketUUID, RequestQueue queue)
-    {
+    /**
+     * Calls RestAPI with GET request for basket Products, puts them in MutableLiveData
+     *
+     * @param basketUUID user's basket id, either phone generated or email
+     * @param queue      API request queue
+     */
+    public void getBasket(String basketUUID, RequestQueue queue) {
         basketProductsMutableLiveData = new MutableLiveData<>();
 
-        // Request a string response from the provided URL.
+        // Call API with GET request to a provided url: "/basket/userUUID"
         StringRequest stringRequest = new StringRequest(Request.Method.GET, API_PRODUCTS_PATH + "/" + basketUUID,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
+
+                        // Set value to a MutableLiveData once we get a request
                         basketProductsMutableLiveData.setValue(extractProduct(response));
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                //NO-OP
             }
         });
 
         // Add the request to the RequestQueue.
         queue.add(stringRequest);
-        return products;
     }
 
-    public void addProductToBasket(String basketUUID, String productId, RequestQueue queue)
-    {
+    /**
+     * Calls RestAPI with PUT request to update basket, puts true in MutableLiveData if it was successful
+     *
+     * @param basketUUID user's basket id, either phone generated or email
+     * @param queue      API request queue
+     */
+    public void addProductToBasket(String basketUUID, String productId, RequestQueue queue) {
 
         basketAddMutableLiveData = new MutableLiveData<>();
 
+        // Set up url
         String url = API_PRODUCTS_PATH + "/" + basketUUID + "?productId=" + productId;
 
-        // Request a string response from the provided URL.
+        // Call API with GET request to a provided url: "/basket/userUUID?productId=productId"
         StringRequest stringRequest = new StringRequest(Request.Method.PUT, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
 
+                        // Set value to a MutableLiveData once we get a request
                         basketAddMutableLiveData.setValue(Boolean.valueOf(response));
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                // Set false to LiveData to inform that action failed
                 basketAddMutableLiveData.setValue(false);
             }
         });
 
         // Add the request to the RequestQueue.
         queue.add(stringRequest);
-
     }
 
+    /**
+     * Calls RestAPI with DELETE request for basket Products, puts true in MutableLiveData if it was successful
+     *
+     * @param basketUUID user's basket id, either phone generated or email
+     * @param queue      API request queue
+     */
     public void removeProductFromBasket(String basketUUID, String productId, RequestQueue queue) {
 
         basketRemoveMutableLiveData = new MutableLiveData<>();
 
+        // Set up url
         String url = API_PRODUCTS_PATH + "/" + basketUUID + "?ProductId=" + productId;
 
-        // Request a string response from the provided URL.
+        // Call API with DELETE request to a provided url: "/basket/userUUID?productId=productId"
         StringRequest stringRequest = new StringRequest(Request.Method.DELETE, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
 
+                        // Set value to a MutableLiveData once we get a request
                         basketRemoveMutableLiveData.setValue(Boolean.valueOf(response));
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                // Set false to LiveData to inform that action failed
                 basketRemoveMutableLiveData.setValue(false);
             }
         });
@@ -101,36 +117,4 @@ public class BasketRepository {
         // Add the request to the RequestQueue.
         queue.add(stringRequest);
     }
-
-    private ArrayList<Product> extractProduct(String response) {
-
-        ArrayList<Product> productList = new ArrayList<>();
-
-        try {
-            JSONArray array = new JSONArray(response);
-
-            for (int i = 0; i < array.length(); i++) {
-
-                Product product = new Product();
-
-                JSONObject jsonObject = array.getJSONObject(i);
-
-                product.id = jsonObject.getString("id");
-                product.description = jsonObject.getString("description");
-                product.name = jsonObject.getString("title");
-                product.price = jsonObject.getString("price");
-                product.pictureUrl = jsonObject.getString("pictureUrl");
-                product.brand = jsonObject.getString("brand");
-
-                productList.add(product);
-            }
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return productList;
-    }
-
 }

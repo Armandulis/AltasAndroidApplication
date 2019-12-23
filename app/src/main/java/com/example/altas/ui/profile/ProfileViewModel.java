@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel;
 
 import com.android.volley.RequestQueue;
 import com.example.altas.Models.ProductStatus;
-import com.example.altas.repositories.AuthenticationRepository;
 import com.example.altas.repositories.ProductStatusRepository;
 
 import java.util.ArrayList;
@@ -16,8 +15,7 @@ import java.util.ArrayList;
  */
 public class ProfileViewModel extends ViewModel {
 
-    public MutableLiveData<ArrayList<ProductStatus>> productStatusListMutableLiveData;
-    private AuthenticationRepository authRepo;
+    MutableLiveData<ArrayList<ProductStatus>> productStatusListMutableLiveData;
     private ProductStatusRepository statusRepo;
     private ArrayList<ProductStatus> productStatusList;
 
@@ -27,7 +25,6 @@ public class ProfileViewModel extends ViewModel {
     public ProfileViewModel() {
 
         // Initialize variables
-        authRepo = new AuthenticationRepository();
         statusRepo = new ProductStatusRepository();
         productStatusListMutableLiveData = new MutableLiveData<>();
 
@@ -37,9 +34,13 @@ public class ProfileViewModel extends ViewModel {
      * Calls repo to get statuses
      *
      * @param userId user who's productStatuses we want to get
+     * @param queue  API request queue
      */
-    public void getAllUserProductStatus(String userId, RequestQueue queue) {
-        productStatusList = statusRepo.getAllProducts(userId, queue);
+    void getAllUserProductStatus(String userId, RequestQueue queue) {
+        //Request for products
+        statusRepo.getAllProductStatus(userId, queue);
+
+        // Observe API response
         statusRepo.productStatusListMutableLiveData.observeForever(new Observer<ArrayList<ProductStatus>>() {
             @Override
             public void onChanged(ArrayList<ProductStatus> productStatuses) {
@@ -53,8 +54,9 @@ public class ProfileViewModel extends ViewModel {
      * Removes productStatus from local list and calls repo to remove it from database
      *
      * @param productStatus productStatus that needs to be removed
+     * @param queue         API request queue
      */
-    public void removeProductStatus(ProductStatus productStatus, RequestQueue queue) {
+    void removeProductStatus(ProductStatus productStatus, RequestQueue queue) {
 
         // Remove productStatus locally
         productStatusList.remove(productStatus);
@@ -70,8 +72,9 @@ public class ProfileViewModel extends ViewModel {
      *
      * @param productStatus productStatus that will be updated
      * @param position      of productStatus that needs to be updated
+     * @param queue         API request queue
      */
-    public void confirmDelivered(ProductStatus productStatus, int position, RequestQueue queue) {
+    void confirmDelivered(ProductStatus productStatus, int position, RequestQueue queue) {
 
         // Update productStatus locally
         productStatusList.set(position, productStatus);

@@ -10,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -42,6 +41,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.Orde
          * Initializes local variables to items from layout
          *
          * @param itemView View
+         * @param listener listener for button in ViewHolder
          */
         OrderListViewHolder(@NonNull View itemView, IRecyclerViewButtonClickListener listener) {
             super(itemView);
@@ -59,10 +59,10 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.Orde
          * Sets values to layouts items
          *
          * @param productStatus ProductStatus
-         * @param context Context
+         * @param context       Context
          */
         void bindData(final ProductStatus productStatus, Context context) {
-            if (productStatus.product.pictureUrl != null && !productStatus.product.pictureUrl.equals("")){
+            if (productStatus.product.pictureUrl != null && !productStatus.product.pictureUrl.equals("")) {
                 Glide.with(context)
                         .load(Uri.parse(productStatus.product.pictureUrl))
                         .into(cardImageView);
@@ -72,7 +72,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.Orde
             buttonStatus.setText(productStatus.status);
 
             // If status is already confirmed delivery by user, we want a button that removes ProductStatus
-            if(productStatus.status.equals(context.getString(R.string.confirmed_delivery))){
+            if (productStatus.status.equals(context.getString(R.string.confirmed_delivery))) {
                 buttonConfirmDelivered.setText(R.string.remove_product);
             }
         }
@@ -88,6 +88,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.Orde
      *
      * @param modelList Array<Product>
      * @param context   Context
+     * @param listener  for button clicked in ViewHolder
      */
     public OrderListAdapter(ArrayList<ProductStatus> modelList, Context context, IRecyclerViewButtonClickListener listener) {
         dataModelList = modelList;

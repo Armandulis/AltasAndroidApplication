@@ -2,7 +2,6 @@ package com.example.altas.ui.shop;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -14,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -61,6 +61,7 @@ public class ShopFragment extends Fragment {
     private Button mButtonReset;
     private Spinner spinnerOrder;
     private ConstraintLayout filterLayout;
+    private TextView textViewLoading;
 
     private String orderValue;
 
@@ -85,6 +86,7 @@ public class ShopFragment extends Fragment {
         spinnerOrder = shopFragmentRoot.findViewById(R.id.shop_spinner_order);
         mRecyclerView = shopFragmentRoot.findViewById(R.id.shop_products_recycler_view);
         mButtonReset = shopFragmentRoot.findViewById(R.id.button_reset_search);
+        textViewLoading = shopFragmentRoot.findViewById(R.id.text_view_shop_loading_label);
 
         // Start with filter layout out of the screen
         filterLayout.animate().translationY(-500);
@@ -152,10 +154,14 @@ public class ShopFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
+    /**
+     * Observes products from ViewModel
+     */
     private void observeProductsList() {
         mViewModel.productsListMutableLiveData.observe(this, new Observer<ArrayList<Product>>() {
             @Override
             public void onChanged(ArrayList<Product> products) {
+                textViewLoading.setVisibility(View.GONE);
                 if(products.size() != 0){
                     addAdapterToProductsView(products);
                 }
@@ -184,7 +190,7 @@ public class ShopFragment extends Fragment {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-
+                // NO-OP
             }
         };
     }
@@ -196,14 +202,18 @@ public class ShopFragment extends Fragment {
      **/
     private void addAdapterToProductsView(ArrayList<Product> products) {
 
+        // Get user
         User user = User.getInstance();
 
+        // If user signed-in
         if (user.email != null && !user.email.equals("")){
+            // Set userUUID as user's email
            userUUID = user.email;
         }
         else{
             // Get basket's id
             SharedPreferences prefs = getActivity().getSharedPreferences(ALTAS_PREF_NAME, MODE_PRIVATE);
+            // Else set userUUID from value saved in shared preference
             userUUID = prefs.getString(BASKET_UUID, null);
 
         }

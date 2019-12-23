@@ -1,6 +1,5 @@
 package com.example.altas.ui.register;
 
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
@@ -16,7 +15,7 @@ import com.example.altas.repositories.AuthenticationRepository;
 public class RegisterViewModel extends ViewModel {
 
     private AuthenticationRepository authRepo;
-    public MutableLiveData<User> userMutableLiveData;
+    MutableLiveData<User> userMutableLiveData;
 
     /**
      * RegisterViewModel constructor
@@ -25,7 +24,7 @@ public class RegisterViewModel extends ViewModel {
 
         // Initialize variables
         authRepo = new AuthenticationRepository();
-        userMutableLiveData = new MutableLiveData();
+        userMutableLiveData = new MutableLiveData<>();
     }
 
     /**
@@ -33,17 +32,17 @@ public class RegisterViewModel extends ViewModel {
      * @param loginInput user's email and password
      * @param queue API request queue
      */
-    public boolean registerUser(LoginInput loginInput, RequestQueue queue) {
+    void registerUser(LoginInput loginInput, RequestQueue queue) {
 
-        // Register user
-        boolean successfulRegistration = authRepo.registerUser(loginInput, queue);
+        // Request for user registration
+        authRepo.registerUser(loginInput, queue);
 
+        // Observe for registration status
         authRepo.userMutableLiveData.observeForever(new Observer<User>() {
             @Override
             public void onChanged(User user) {
                 userMutableLiveData.setValue(user);
             }
         });
-        return successfulRegistration;
     }
 }

@@ -2,7 +2,6 @@ package com.example.altas.ui.profile;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,7 +44,9 @@ public class ProfileFragment extends Fragment {
     private ProfileViewModel mViewModel;
 
     private TextView textViewUserEmail;
+    private TextView textViewUserLabel;
     private TextView textViewNoPurchases;
+    private TextView textViewLoading;
     private RecyclerView recyclerViewProductStatus;
 
     private OrderListAdapter mAdapter;
@@ -63,26 +64,32 @@ public class ProfileFragment extends Fragment {
         mViewModel = ViewModelProviders.of(this).get(ProfileViewModel.class);
 
         textViewUserEmail = profileFragmentRoot.findViewById(R.id.status_text_view_user_email);
+        textViewUserLabel = profileFragmentRoot.findViewById(R.id.text_view_user_label);
         textViewNoPurchases = profileFragmentRoot.findViewById(R.id.text_view_no_purchases);
         recyclerViewProductStatus = profileFragmentRoot.findViewById(R.id.profile_status_recycler_view);
+        textViewLoading = profileFragmentRoot.findViewById(R.id.text_view_profile_loading_label);
 
         // Instantiate the RequestQueue.
         queue = Volley.newRequestQueue(getContext());
 
+        // If user signed in
         User user = User.getInstance();
-        if (user.email != null && !user.email.equals("")){
+        if (user.email != null && !user.email.equals("")) {
+            // Set up userUUID
             basketUUID = user.email;
-        }
-        else {
+            textViewUserEmail.setText(user.email);
+        } else {
             // Get basketId
             SharedPreferences prefs = getActivity().getSharedPreferences(ALTAS_PREF_NAME, MODE_PRIVATE);
             basketUUID = prefs.getString(BASKET_UUID, null);
+
+            // Hide user textViews
+            textViewUserEmail.setVisibility(View.GONE);
+            textViewUserLabel.setVisibility(View.GONE);
         }
 
         // Initialize suggested productStatuses with email
         mViewModel.getAllUserProductStatus(basketUUID, queue);
-
-        Log.d("UUID", "onClick: " + basketUUID);
 
         // Use a linear layout manager on RecyclerView
         mLayoutManager = new LinearLayoutManager(getContext());
@@ -114,10 +121,17 @@ public class ProfileFragment extends Fragment {
         return profileFragmentRoot;
     }
 
+    /**
+     * Creates Observer that applied adapter and returns it
+     *
+     * @return returns Observer
+     */
     private Observer<ArrayList<ProductStatus>> getObserver() {
         return new Observer<ArrayList<ProductStatus>>() {
             @Override
             public void onChanged(ArrayList<ProductStatus> productStatuses) {
+                textViewLoading.setVisibility(View.GONE);
+
                 // Check if there are any productStatus in the list
                 if (productStatuses.size() == 0) {
                     textViewNoPurchases.setVisibility(View.VISIBLE);
@@ -159,8 +173,9 @@ public class ProfileFragment extends Fragment {
 
     /**
      * Changes productStatus status and informs user about it
+     *
      * @param productStatus product status that will be updated
-     * @param position at which productStatus was clicked
+     * @param position      at which productStatus was clicked
      */
     private void handleProductStatusConfirmation(ProductStatus productStatus, int position) {
         productStatus.status = getString(R.string.confirmed_delivery);
@@ -175,13 +190,12 @@ public class ProfileFragment extends Fragment {
     }
 
     /**
-     *
      * Removed productStatus and informs user about it
+     *
      * @param productStatus that will be removed
      */
     private void handleProductStatusRemoval(ProductStatus productStatus) {
-        // If status is confirmed delivery by user, we can only remove productStatus
-        // from the list
+        // If status is confirmed delivery by user, we can only remove productStatus from the list
         mViewModel.removeProductStatus(productStatus, queue);
 
         // Inform user that productStatus was removed

@@ -101,7 +101,7 @@ public class RegisterFragment extends Fragment {
     private void registerUser(LoginInput loginInput) {
 
         // Register user
-        boolean userRegistered = mViewModel.registerUser(loginInput, queue);
+        mViewModel.registerUser(loginInput, queue);
 
         mViewModel.userMutableLiveData.observe(this, new Observer<User>() {
             @Override

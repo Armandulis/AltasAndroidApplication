@@ -20,10 +20,10 @@ public class ShopViewModel extends ViewModel {
 
     private ProductRepository productRepository;
     private ArrayList<Product> productsList;
-    public boolean isLoading = false;
-    public boolean isLastPage = false;
+    private boolean isLoading = false;
+    private boolean isLastPage = false;
 
-    public Filter filter;
+    Filter filter;
 
     /**
      * ShopViewModel constructor
@@ -37,21 +37,34 @@ public class ShopViewModel extends ViewModel {
         filter = new Filter();
     }
 
-    public void initializeProducts(RequestQueue queue){
+    /**
+     * Requests Repository for products and listens for response
+     *
+     * @param queue RequestQueue for API requests
+     */
+    void initializeProducts(RequestQueue queue) {
 
-        // Get first page products
-        productsList.addAll(productRepository.getPaginatedProducts(filter, queue));
+        // While getting products we set loading to true
+        isLoading = true;
 
+        // Request for products
+        productRepository.getPaginatedProducts(filter, queue);
+
+        // Get value from request
         productRepository.productsListMutableLiveData.observeForever(new Observer<ArrayList<Product>>() {
             @Override
             public void onChanged(ArrayList<Product> products) {
 
-                // While getting products we set loading to true
-                isLoading = true;
+                // Validate if it is a last page
+                if (products.size() == 0 ){
 
-                productsList.addAll(products);
-
-                productsListMutableLiveData.setValue(products);
+                    isLastPage = true;
+                }else
+                {
+                    productsList.addAll(products);
+                    productsListMutableLiveData.setValue(products);
+                    isLastPage = false;
+                }
 
                 // After we got products we put loading to false
                 isLoading = false;
@@ -61,11 +74,14 @@ public class ShopViewModel extends ViewModel {
 
     /**
      * Gets paginated products list and puts it in the list
+     *
+     * @param queue RequestQueue for API requests
      */
-    public void getPaginatedProductList(RequestQueue queue) {
+    void getPaginatedProductList(RequestQueue queue) {
 
-        // Get last item for pagination reasons
+        // If list is size of 0, we want to get first page of products
         if (productsList.size() != 0) {
+            // Get last item for pagination reasons
             Product product = productsList.get(productsList.size() - 1);
             filter.lastProductId = product.id;
         }
@@ -76,19 +92,19 @@ public class ShopViewModel extends ViewModel {
     /**
      * @return boolean, False if there are no more than 10 products left
      */
-    public boolean isLastPage() {
+    boolean isLastPage() {
         return isLastPage;
     }
 
     /**
      * @return boolean State of getting products from database
      */
-    public boolean isLoading() {
+    boolean isLoading() {
         return isLoading;
     }
 
     /**
-     * Sets earlier loaded items to MutableLiveData and resets filter
+     * Resets values
      */
     void clearSearchAndFilter() {
         filter = new Filter();

@@ -9,99 +9,73 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.example.altas.Models.Filter;
 import com.example.altas.Models.Product;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
+import com.example.altas.repositories.BaseRepositories.BaseVolleyRepository;
 
 import java.util.ArrayList;
 
-public class ProductRepository {
+public class ProductRepository extends BaseVolleyRepository {
 
-    public static final String API_PRODUCTS_PATH = "http://altas.gear.host/api/products";
-
-    private ArrayList<Product> products;
+    public static final String API_PRODUCTS_PATH = "http://atlastrestapi.azurewebsites.net/api/products";
     public MutableLiveData<ArrayList<Product>> productsListMutableLiveData;
 
-    // TODO count how many products there are in the database so we could calculate last page
-
-    public ProductRepository() {
-        products = new ArrayList<>();
-    }
-
-    // TODO PAGINATED QUERY FROM DB use ShopFragment.PAGE_SIZE for the amount that we need to get
-    public ArrayList<Product> getPaginatedProducts(Filter filter, RequestQueue queue) {
+    /**
+     * Calls RestAPI with GET request for Products, puts them in MutableLiveData
+     *
+     * @param filter used for query products
+     * @param queue  API request queue
+     */
+    public void getPaginatedProducts(Filter filter, RequestQueue queue) {
 
         productsListMutableLiveData = new MutableLiveData<>();
 
         String url = setUpUrlByFilter(filter);
 
-
-        // Request a string response from the provided URL.
+        // Call API with GET request to a provided url: "/products"
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
+
+                        // Set value to a MutableLiveData once we get a request
                         productsListMutableLiveData.setValue(extractProduct(response));
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                // NO-OP
             }
         });
 
         // Add the request to the RequestQueue.
         queue.add(stringRequest);
-        return products;
     }
 
-    private ArrayList<Product> extractProduct(String response) {
+    /**
+     * Takes filter values and puts them in a string as url for api requests
+     *
+     * @param filter filter that will parsed to url
+     * @return url with filter values
+     */
+    private String setUpUrlByFilter(Filter filter) {
 
-        ArrayList<Product> productList = new ArrayList<>();
-
-        try {
-            JSONArray array = new JSONArray(response);
-
-            for (int i = 0; i < array.length(); i++) {
-
-                Product product = new Product();
-
-                JSONObject jsonObject = array.getJSONObject(i);
-
-                product.id = jsonObject.getString("id");
-                product.description = jsonObject.getString("description");
-                product.name = jsonObject.getString("title");
-                product.price = jsonObject.getString("price");
-                product.pictureUrl = jsonObject.getString("pictureUrl");
-                product.brand = jsonObject.getString("brand");
-
-                productList.add(product);
-            }
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return productList;
-    }
-
-    private String setUpUrlByFilter(Filter filter){
+        // Base API Url
         String url = API_PRODUCTS_PATH;
 
+        // OrderBy always has value
         url = url + "?OrderBy=" + filter.orderBy;
 
-        if (filter.lastProductId != null){
+        // Check if filter has any other values
+        if (filter.lastProductId != null) {
             url = url + "&LastItemId=" + filter.lastProductId;
         }
-        if (filter.searchWord != null){
+        if (filter.searchWord != null) {
             url = url + "&SearchWord=" + filter.searchWord;
         }
-
-        if (filter.amount != 0){
+        if (filter.amount != 0) {
             url = url + "&Amount=" + filter.amount;
         }
 
+        // Return formatted url
         return url;
     }
 }

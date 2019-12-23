@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/text_view_user_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -25,7 +25,7 @@
         android:text="User's email"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+        app:layout_constraintTop_toBottomOf="@+id/text_view_user_label" />
 
     <TextView
         android:id="@+id/textView17"
@@ -60,6 +60,17 @@
         android:text="@string/no_purchases"
         style="@style/TextAppearance.MaterialComponents.Headline6"
         android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/profile_status_recycler_view"
+        app:layout_constraintEnd_toEndOf="@+id/profile_status_recycler_view"
+        app:layout_constraintStart_toStartOf="@+id/profile_status_recycler_view"
+        app:layout_constraintTop_toBottomOf="@+id/textView17" />
+
+    <TextView
+        android:id="@+id/text_view_profile_loading_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/loading"
+        style="@style/TextAppearance.MaterialComponents.Headline5"
         app:layout_constraintBottom_toBottomOf="@+id/profile_status_recycler_view"
         app:layout_constraintEnd_toEndOf="@+id/profile_status_recycler_view"
         app:layout_constraintStart_toStartOf="@+id/profile_status_recycler_view"

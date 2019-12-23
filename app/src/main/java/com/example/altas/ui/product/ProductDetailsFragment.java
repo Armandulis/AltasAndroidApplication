@@ -99,7 +99,7 @@ public class ProductDetailsFragment extends Fragment {
         String basketUUID = prefs.getString(BASKET_UUID, null);
 
         User user = User.getInstance();
-        if (user.email != null && !user.email.equals("")){
+        if (user.email != null && !user.email.equals("")) {
             basketUUID = user.email;
         }
         basketRepository.addProductToBasket(basketUUID, product.id, queue);
@@ -118,7 +118,10 @@ public class ProductDetailsFragment extends Fragment {
         textViewProductPrice.setText(product.price);
         textViewProductBrand.setText(product.brand);
         textViewProductAmount.setText(product.amount);
-        if (product.pictureUrl != null && !product.pictureUrl.equals("")){
+
+        // Check if picture url is set
+        if (product.pictureUrl != null && !product.pictureUrl.equals("")) {
+            // Parse url to image view
             Glide.with(getActivity())
                     .load(Uri.parse(product.pictureUrl))
                     .into(imageViewProductImage);

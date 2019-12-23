@@ -2,6 +2,7 @@ package com.example.altas.Models;
 
 public class User {
 
+    // Singleton class
     private static final User user = new User();
 
     public static User getInstance() {

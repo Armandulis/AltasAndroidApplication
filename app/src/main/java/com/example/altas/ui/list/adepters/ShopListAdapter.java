@@ -2,7 +2,6 @@ package com.example.altas.ui.list.adepters;
 
 import android.content.Context;
 import android.net.Uri;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +9,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -47,6 +45,7 @@ public class ShopListAdapter extends RecyclerView.Adapter<ShopListAdapter.MyView
          * Initializes local variables to items from layout
          *
          * @param itemView View
+         * @param listener listener for button in ViewHolder
          */
         MyViewHolder(@NonNull View itemView, IRecyclerViewButtonClickListener listener) {
             super(itemView);
@@ -63,23 +62,25 @@ public class ShopListAdapter extends RecyclerView.Adapter<ShopListAdapter.MyView
         /**
          * Sets values to layouts items
          *
-         * @param product Product
-         * @param context Context
+         * @param product  Product
+         * @param context  Context
+         * @param isBasket boolean, checks if we call adapter from basket fragment
          */
         void bindData(final Product product, Context context, boolean isBasket) {
-            if (product.pictureUrl != null && !product.pictureUrl.equals("")){
+
+            // Check if picture is set
+            if (product.pictureUrl != null && !product.pictureUrl.equals("")) {
                 Glide.with(context)
                         .load(Uri.parse(product.pictureUrl))
                         .into(cardImageView);
             }
 
-            Log.d("ARMAND", "cia va : " + product.pictureUrl);
             titleTextView.setText(product.name);
             priceTextView.setText(product.price);
             brandTextView.setText(product.brand);
 
             // If it is basket, we want to change image for basket button
-            if(isBasket){
+            if (isBasket) {
                 buttonAddToCart.setImageResource(R.drawable.ic_shopping_cart_remove_black_24dp);
             }
         }
@@ -95,6 +96,8 @@ public class ShopListAdapter extends RecyclerView.Adapter<ShopListAdapter.MyView
      *
      * @param modelList Array<Product>
      * @param context   Context
+     * @param listener for button clicked in ViewHolder
+     * @param isBasket Validate if adapter is needed for basket
      */
     public ShopListAdapter(ArrayList<Product> modelList, Context context, IRecyclerViewButtonClickListener listener, boolean isBasket) {
         dataModelList = modelList;

@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -46,6 +47,7 @@ public class HomeFragment extends Fragment {
     private ImageView mImageViewGreeting;
 
     private RequestQueue queue;
+    private TextView textViewLoading;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -55,6 +57,7 @@ public class HomeFragment extends Fragment {
         mImageViewGreeting = homeFragmentRoot.findViewById(R.id.image_view_home_greeting);
         mViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
         mRecyclerView = homeFragmentRoot.findViewById(R.id.home_products_recycler_view);
+        textViewLoading = homeFragmentRoot.findViewById(R.id.text_view_home_loading_label);
         mLayoutManager = new LinearLayoutManager(getContext());
 
         // Instantiate the RequestQueue.
@@ -89,17 +92,17 @@ public class HomeFragment extends Fragment {
     }
 
     /**
-     *  Returns Observer with onChange, when data was changed, set adapter
+     * Returns Observer with onChange, when data was changed, set adapter
+     *
      * @return Observer of products list
      */
     private Observer<ArrayList<Product>> setUpProductsObserver() {
         return new Observer<ArrayList<Product>>() {
             @Override
             public void onChanged(ArrayList<Product> products) {
-
                 // Check if we have products
-                if (products.size() != 0 ){
-
+                if (products.size() != 0) {
+                    textViewLoading.setVisibility(View.GONE);
                     // Set up adapter
                     mAdapter = new ShopListAdapter(products, getContext(), handleBasketButtonClickListener(), false);
                     mRecyclerView.setAdapter(mAdapter);
@@ -122,17 +125,14 @@ public class HomeFragment extends Fragment {
                 SharedPreferences prefs = getActivity().getSharedPreferences(ALTAS_PREF_NAME, MODE_PRIVATE);
                 String basketUUID = prefs.getString(BASKET_UUID, null);
                 User user = User.getInstance();
-                if (user.email != null && !user.email.equals("")){
+                if (user.email != null && !user.email.equals("")) {
                     basketUUID = user.email;
-                    Log.d("UUID", "onClick: " + user.email);
                 }
                 // Get Product's id
                 Product product = mAdapter.getItemFromList(position);
 
                 // Add Product to basket
                 mViewModel.addProductToBasket(basketUUID, product.id, queue);
-
-
 
                 // Inform user that product was added
                 Snackbar.make(getParentFragment().getView(), product.name + " " + getString(R.string.product_was_added), Snackbar.LENGTH_SHORT)
