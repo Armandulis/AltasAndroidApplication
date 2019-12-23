@@ -89,7 +89,6 @@ public class ShopFragment extends Fragment {
         textViewLoading = shopFragmentRoot.findViewById(R.id.text_view_shop_loading_label);
 
         // Start with filter layout out of the screen
-        filterLayout.animate().translationY(-500);
         setHasOptionsMenu(true);
 
         // Create an ArrayAdapter using the string array and a default spinner layout
@@ -106,7 +105,7 @@ public class ShopFragment extends Fragment {
         mRecyclerView.setHasFixedSize(true);
 
         // Add On Click Listener to spinner
-        spinnerOrder.setOnItemSelectedListener(handleOnItemSelectedListener());
+        spinnerOrder.setOnItemSelectedListener(handleOnOrderSelectedListener());
 
         // Pagination
         mRecyclerView.addOnScrollListener(getProductsListScrollListener());
@@ -174,7 +173,7 @@ public class ShopFragment extends Fragment {
      *
      * @return OnItemSelectedListener
      **/
-    private AdapterView.OnItemSelectedListener handleOnItemSelectedListener() {
+    private AdapterView.OnItemSelectedListener handleOnOrderSelectedListener() {
         return new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -243,6 +242,7 @@ public class ShopFragment extends Fragment {
         // Get products without any values set to filter
         mViewModel.initializeProducts(queue);
         observeProductsList();
+        hideSearchTab();
     }
 
     @Override
@@ -268,6 +268,9 @@ public class ShopFragment extends Fragment {
             // Get products with search and order values
             mViewModel.initializeProducts(queue);
             observeProductsList();
+
+            // Hide search tab for better User experience
+            hideSearchTab();
 
         } else {
             // Inform user about empty search value
@@ -339,12 +342,25 @@ public class ShopFragment extends Fragment {
             isSearchBarHidden = true;
             filterLayout.animate().translationY(-500);
         } else {
-
             // Show Layout
             isSearchBarHidden = false;
             filterLayout.animate().translationY(0);
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Hides container that holds search and order UI
+     */
+    private void hideSearchTab(){
+        // Set visibility of layout to visible
+        filterLayout.setVisibility(View.VISIBLE);
+
+        // Check if search bar is hidden or not
+        if (!isSearchBarHidden) {
+            isSearchBarHidden = true;
+            filterLayout.animate().translationY(-500);
+        }
     }
 }
