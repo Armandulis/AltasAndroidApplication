@@ -48,6 +48,8 @@ public class BaseVolleyRepository {
                 product.price = jsonObject.getString("price");
                 product.pictureUrl = jsonObject.getString("pictureUrl");
                 product.brand = jsonObject.getString("brand");
+                product.type = jsonObject.getString("type");
+                product.amount = jsonObject.getString("amount");
 
                 productList.add(product);
             }
@@ -120,6 +122,8 @@ public class BaseVolleyRepository {
                 product.price = jsonProduct.getString("price");
                 product.pictureUrl = jsonProduct.getString("pictureUrl");
                 product.brand = jsonProduct.getString("brand");
+                product.type = jsonProduct.getString("type");
+                product.amount = jsonProduct.getString("amount");
 
                 productStatus.product = product;
 
@@ -185,6 +189,8 @@ public class BaseVolleyRepository {
             jsonBodyProduct.put("price", productStatus.product.price);
             jsonBodyProduct.put("pictureUrl", productStatus.product.pictureUrl);
             jsonBodyProduct.put("brand", productStatus.product.brand);
+            jsonBodyProduct.put("type", productStatus.product.type);
+            jsonBodyProduct.put("amount", productStatus.product.amount);
 
             // Add product to ProductStatus
             jsonBody.put("product", jsonBodyProduct);
