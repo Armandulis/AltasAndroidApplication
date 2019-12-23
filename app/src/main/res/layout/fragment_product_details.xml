@@ -7,8 +7,8 @@
 
     <ImageView
         android:id="@+id/image_view_details_image"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
+        android:layout_width="393dp"
+        android:layout_height="178dp"
         android:layout_marginStart="4dp"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="4dp"
@@ -32,12 +32,12 @@
 
     <TextView
         android:id="@+id/text_view_product_details_title"
+        style="@style/TextAppearance.MaterialComponents.Headline6"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="4dp"
-        style="@style/TextAppearance.MaterialComponents.Headline6"
         android:text="TextViewForTitle"
         app:layout_constraintEnd_toStartOf="@+id/button_details_add_to_cart"
         app:layout_constraintStart_toStartOf="parent"
@@ -50,10 +50,10 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:scrollbars="vertical"
         android:maxHeight="150dp"
-        android:textSize="18sp"
+        android:scrollbars="vertical"
         android:text="@string/about_us_text"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/text_view_product_details_title"
@@ -127,5 +127,4 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/textView11"
         app:layout_constraintTop_toBottomOf="@+id/textView11" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>
