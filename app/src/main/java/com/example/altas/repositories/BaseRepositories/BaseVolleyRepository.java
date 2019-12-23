@@ -41,16 +41,20 @@ public class BaseVolleyRepository {
                 // Put values from JSONObject to Product
                 JSONObject jsonObject = array.getJSONObject(i);
 
-                // Get values
-                product.id = jsonObject.getString("id");
-                product.description = jsonObject.getString("description");
-                product.name = jsonObject.getString("title");
-                product.price = jsonObject.getString("price");
-                product.pictureUrl = jsonObject.getString("pictureUrl");
-                product.brand = jsonObject.getString("brand");
-                product.type = jsonObject.getString("type");
-                product.amount = jsonObject.getString("amount");
-
+                try{
+                    // Get values
+                    product.id = jsonObject.getString("id");
+                    product.description = jsonObject.getString("description");
+                    product.name = jsonObject.getString("title");
+                    product.price = jsonObject.getString("price");
+                    product.pictureUrl = jsonObject.getString("pictureUrl");
+                    product.brand = jsonObject.getString("brand");
+                    product.type = jsonObject.getString("type");
+                    product.amount = jsonObject.getString("amount");
+                }
+                catch (Exception e){
+                    // If some of the values are missing, we still want to add them to Product
+                }
                 productList.add(product);
             }
         } catch (Exception e) {
@@ -116,17 +120,20 @@ public class BaseVolleyRepository {
                 JSONObject jsonProduct = jsonObject.getJSONObject("product");
                 Product product = new Product();
 
-                product.id = jsonProduct.getString("id");
-                product.description = jsonProduct.getString("description");
-                product.name = jsonProduct.getString("title");
-                product.price = jsonProduct.getString("price");
-                product.pictureUrl = jsonProduct.getString("pictureUrl");
-                product.brand = jsonProduct.getString("brand");
-                product.type = jsonProduct.getString("type");
-                product.amount = jsonProduct.getString("amount");
-
+                try{
+                    product.id = jsonProduct.getString("id");
+                    product.description = jsonProduct.getString("description");
+                    product.name = jsonProduct.getString("title");
+                    product.price = jsonProduct.getString("price");
+                    product.pictureUrl = jsonProduct.getString("pictureUrl");
+                    product.brand = jsonProduct.getString("brand");
+                    product.type = jsonProduct.getString("type");
+                    product.amount = jsonProduct.getString("amount");
+                }
+                catch (Exception e){
+                // If some of the values are missing, we still want to add it to ProductStatus
+                }
                 productStatus.product = product;
-
                 productStatusList.add(productStatus);
             }
 
